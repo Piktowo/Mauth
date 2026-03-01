@@ -32,7 +32,7 @@ import com.xinto.mauth.ui.screen.pinsetup.PinSetupViewModel
 import com.xinto.mauth.ui.screen.qrscan.QrScanViewModel
 import com.xinto.mauth.ui.screen.settings.SettingsViewModel
 import com.xinto.mauth.ui.screen.theme.ThemeViewModel
-import net.zetetic.database.sqlcipher.SupportFactory
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
@@ -56,7 +56,7 @@ object MauthDI {
             val context = androidContext()
             val passphrase = DatabaseKeyManager.getOrCreateKey(context)
             DatabaseMigrationHelper.encryptIfPlaintext(context, "accounts", passphrase)
-            val factory = SupportFactory(passphrase)
+            val factory = SupportOpenHelperFactory(passphrase)
             Room.databaseBuilder(context, AccountDatabase::class.java, "accounts")
                 .openHelperFactory(factory)
                 .addMigrations(AccountDatabase.Migrate3to4)

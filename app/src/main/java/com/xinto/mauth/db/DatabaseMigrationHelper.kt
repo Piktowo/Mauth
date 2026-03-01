@@ -34,10 +34,10 @@ internal object DatabaseMigrationHelper {
         try {
             val hexKey = passphrase.joinToString("") { "%02x".format(it) }
 
-            // Open the existing plaintext database (empty CharArray = no encryption)
+            // Open the existing plaintext database (empty ByteArray = no encryption)
             val db = SQLiteDatabase.openOrCreateDatabase(
                 dbFile.absolutePath,
-                CharArray(0),
+                ByteArray(0),
                 null,
                 null,
             )
