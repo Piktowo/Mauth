@@ -34,7 +34,7 @@ class WebDavClient {
                 }
                 client.newCall(requestBuilder.build()).execute().use { response ->
                     if (!response.isSuccessful) {
-                        error("HTTP ${response.code}")
+                        error("HTTP ${response.code} ${response.message}")
                     }
                 }
             }
@@ -53,7 +53,7 @@ class WebDavClient {
                 }
                 client.newCall(requestBuilder.build()).execute().use { response ->
                     if (!response.isSuccessful) {
-                        error("HTTP ${response.code}")
+                        error("HTTP ${response.code} ${response.message}")
                     }
                     response.body?.string() ?: ""
                 }
