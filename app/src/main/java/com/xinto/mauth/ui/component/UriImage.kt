@@ -25,6 +25,6 @@ fun UriImage(
                 .build()
         ),
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Fit
     )
 }

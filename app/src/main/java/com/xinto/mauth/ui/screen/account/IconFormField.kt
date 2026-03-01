@@ -158,16 +158,21 @@ class IconFormField(
 
     private suspend fun fetchIconForIssuer(context: Context, issuer: String): Uri? =
         withContext(Dispatchers.IO) {
-            val domain = issuer.lowercase()
+            // 小写并去掉首尾空格
+            val normalizedIssuer = issuer.lowercase().trim()
+            // 移除所有空格，使名称中含空格（如 "Epic Games"）也能正确拼出域名
+            val domainSlug = normalizedIssuer.replace("\\s+".toRegex(), "")
+            // 已知品牌域名覆盖：处理改名品牌（Twitter→X）及中文品牌名称
+            val domain = KNOWN_DOMAINS[normalizedIssuer] ?: "${domainSlug}.com"
             val candidates = listOf(
-                // Google 高清 favicon（128px），提供官方品牌图标
-                "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}.com&size=128",
-                // Clearbit logo API — 提供矢量转换的高清品牌 logo
-                "https://logo.clearbit.com/${domain}.com",
+                // Google 高清 favicon（256px），提供官方品牌图标
+                "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=256",
+                // Clearbit logo API — 提供矢量转换的高清品牌 logo（512px）
+                "https://logo.clearbit.com/${domain}?size=512",
                 // DuckDuckGo favicon（高质量备用）
-                "https://icons.duckduckgo.com/ip3/${domain}.com.ico",
+                "https://icons.duckduckgo.com/ip3/${domain}.ico",
                 // Bitwarden 图标服务（最后备选）
-                "https://icons.bitwarden.net/${domain}.com/icon.png",
+                "https://icons.bitwarden.net/${domain}/icon.png",
             )
             for (urlString in candidates) {
                 try {
@@ -200,4 +205,26 @@ class IconFormField(
             }
             null
         }
+
+    companion object {
+        /**
+         * 已知品牌名称 → 域名的映射表。
+         * 用于处理：品牌改名（Twitter→X）、中文品牌名称无法直接推断域名等情况。
+         * key 为全小写（含空格）的品牌名，value 为完整域名（含 TLD）。
+         */
+        private val KNOWN_DOMAINS = mapOf(
+            // 英文品牌改名/别名
+            "twitter" to "x.com",
+            "x" to "x.com",
+            "chatgpt" to "openai.com",
+            // 中文品牌名称 → 对应域名
+            "币安" to "binance.com",
+            "微信" to "weixin.qq.com",
+            "支付宝" to "alipay.com",
+            "淘宝" to "taobao.com",
+            "京东" to "jd.com",
+            "百度" to "baidu.com",
+            "哔哩哔哩" to "bilibili.com",
+        )
+    }
 }
