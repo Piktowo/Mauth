@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.xinto.mauth.R
 import com.xinto.mauth.domain.account.model.DomainAccount
 import com.xinto.mauth.domain.otp.model.DomainOtpRealtimeData
@@ -214,7 +215,10 @@ private fun RealtimeInformation(
             label = "Code"
         ) { (show, code) ->
             val showAwareCode = if (show) code else "•".repeat(code.length)
-            Text(showAwareCode, style = MaterialTheme.typography.titleLarge)
+            Text(showAwareCode, style = MaterialTheme.typography.titleLarge.copy(
+                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                letterSpacing = 2.sp
+            ))
         }
     }
 }

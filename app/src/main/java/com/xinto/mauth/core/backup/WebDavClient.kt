@@ -11,11 +11,13 @@ class WebDavClient {
     suspend fun put(url: String, username: String, password: String, data: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val connection = URL(url).openConnection() as HttpURLConnection
+                val fileUrl = ensureFileUrl(url)
+                val connection = URL(fileUrl).openConnection() as HttpURLConnection
                 connection.apply {
                     requestMethod = "PUT"
                     doOutput = true
                     setRequestProperty("Content-Type", "text/plain; charset=utf-8")
+                    setRequestProperty("User-Agent", USER_AGENT)
                     if (username.isNotEmpty()) {
                         setRequestProperty("Authorization", basicAuth(username, password))
                     }
@@ -34,9 +36,11 @@ class WebDavClient {
     suspend fun get(url: String, username: String, password: String): Result<String> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val connection = URL(url).openConnection() as HttpURLConnection
+                val fileUrl = ensureFileUrl(url)
+                val connection = URL(fileUrl).openConnection() as HttpURLConnection
                 connection.apply {
                     requestMethod = "GET"
+                    setRequestProperty("User-Agent", USER_AGENT)
                     if (username.isNotEmpty()) {
                         setRequestProperty("Authorization", basicAuth(username, password))
                     }
@@ -57,5 +61,22 @@ class WebDavClient {
     private fun basicAuth(username: String, password: String): String {
         val credentials = "$username:$password"
         return "Basic " + Base64.encodeToString(credentials.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
+    }
+
+    companion object {
+        private const val USER_AGENT = "Mauth/1.0"
+        private const val DEFAULT_BACKUP_FILE = "mauth_backup.txt"
+
+        fun ensureFileUrl(url: String): String {
+            val trimmed = url.trim()
+            val path = URL(trimmed).path
+            val lastSegment = path.trimEnd('/').substringAfterLast('/')
+            return if (lastSegment.contains('.')) {
+                trimmed
+            } else {
+                val base = if (trimmed.endsWith("/")) trimmed else "$trimmed/"
+                "$base$DEFAULT_BACKUP_FILE"
+            }
+        }
     }
 }

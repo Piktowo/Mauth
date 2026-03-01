@@ -107,7 +107,7 @@
 
     <string name="webdav_title">WebDAV Backup</string>
     <string name="webdav_url">Server URL</string>
-    <string name="webdav_url_hint">https://dav.example.com/path/</string>
+    <string name="webdav_url_hint">https://dav.example.com/dav/path/</string>
     <string name="webdav_username">Username</string>
     <string name="webdav_password">Password</string>
     <string name="webdav_backup">Backup now</string>
