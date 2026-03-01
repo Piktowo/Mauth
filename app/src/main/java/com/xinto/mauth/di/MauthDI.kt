@@ -17,7 +17,6 @@ import com.xinto.mauth.core.settings.Settings
 import com.xinto.mauth.db.AccountDatabase
 import com.xinto.mauth.db.DatabaseKeyManager
 import com.xinto.mauth.db.DatabaseMigrationHelper
-import net.zetetic.database.sqlcipher.SupportFactory
 import com.xinto.mauth.domain.AuthRepository
 import com.xinto.mauth.domain.QrRepository
 import com.xinto.mauth.domain.SettingsRepository
@@ -33,6 +32,7 @@ import com.xinto.mauth.ui.screen.pinsetup.PinSetupViewModel
 import com.xinto.mauth.ui.screen.qrscan.QrScanViewModel
 import com.xinto.mauth.ui.screen.settings.SettingsViewModel
 import com.xinto.mauth.ui.screen.theme.ThemeViewModel
+import net.zetetic.database.sqlcipher.SupportFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf

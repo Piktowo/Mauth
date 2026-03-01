@@ -34,7 +34,7 @@ class DefaultOtpExporter : OtpExporter {
             OtpType.HOTP -> {
                 uriBuilder
                     .authority("hotp")
-                    .appendQueryParameter("counter", data.period.toString())
+                    .appendQueryParameter("counter", data.counter?.toString() ?: "0")
             }
         }.toString().also(::println)
     }
@@ -75,14 +75,14 @@ class DefaultOtpExporter : OtpExporter {
 
         var counter = 0
         protoData.forEachIndexed { i, otpData ->
+            counter += otpData.serializedSize
+            migrationBuilder.addOtpData(otpData)
+
             if (counter > 300 || i == protoData.lastIndex) {
                 migrationBuilders.add(migrationBuilder)
                 migrationBuilder = GoogleAuthenticator.MigrationPayload.newBuilder()
                 counter = 0
             }
-
-            counter += otpData.serializedSize
-            migrationBuilder.addOtpData(otpData)
         }
 
         val randomBatchId = Random.nextInt()
@@ -96,7 +96,7 @@ class DefaultOtpExporter : OtpExporter {
                 .build()
         }
 
-        val data = batches.map {
+        val encoded = batches.map {
             buildString {
                 append("otpauth-migration://offline?data=")
 
@@ -105,7 +105,7 @@ class DefaultOtpExporter : OtpExporter {
             }
         }
 
-        return data
+        return encoded
     }
 
 }

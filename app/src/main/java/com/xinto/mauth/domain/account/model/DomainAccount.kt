@@ -20,7 +20,7 @@ sealed class DomainAccount {
         label.filter {
             it.isUpperCase()
         }.ifEmpty {
-            label[0].uppercase()
+            label.firstOrNull()?.uppercase() ?: ""
         }.take(3)
     }
 

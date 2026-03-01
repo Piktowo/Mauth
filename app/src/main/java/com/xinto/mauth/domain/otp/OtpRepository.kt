@@ -38,7 +38,7 @@ class OtpRepository(
                     val bytes = otpKeyTransformer.transformToBytes(account.secret)
                     when (account.type) {
                         OtpType.HOTP -> {
-                            val count = counters[id]!!.count
+                            val count = counters[id]?.count ?: 0
                             DomainOtpRealtimeData.Hotp(
                                 code = otpGenerator.generateHotp(
                                     secret = bytes,
