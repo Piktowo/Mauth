@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
@@ -188,7 +186,6 @@ fun WebDavBackupScreen(
                                 visualTransformation = PasswordVisualTransformation(),
                                 singleLine = true,
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
                             Button(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = onBackup

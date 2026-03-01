@@ -88,6 +88,7 @@ fun ExportScreen(
     mode: ExportMode,
     onModeSelect: (ExportMode) -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -99,7 +100,8 @@ fun ExportScreen(
                             contentDescription = null
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { paddingValues ->
