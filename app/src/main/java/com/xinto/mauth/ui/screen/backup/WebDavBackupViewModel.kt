@@ -1,6 +1,7 @@
 package com.xinto.mauth.ui.screen.backup
 
 import android.app.Application
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -57,13 +58,7 @@ class WebDavBackupViewModel(
                 return@launch
             }
             _isLoading.value = true
-            val accounts = accountRepository.getAccounts().first()
-            val lines = accounts.mapNotNull { account ->
-                with(accountRepository) {
-                    runCatching { account.toExportAccount().url }.getOrNull()
-                }
-            }
-            val content = lines.joinToString("\n")
+            val content = buildBackupContent()
             val result = webDavClient.put(
                 url = url,
                 username = webDavUsername.value,
@@ -100,23 +95,83 @@ class WebDavBackupViewModel(
                 return@launch
             }
             val content = result.getOrThrow()
-            var importedCount = 0
-            content.lines().forEach { line ->
-                val trimmed = line.trim()
-                if (trimmed.isEmpty()) return@forEach
-                when (val parsed = otpUriParser.parseOtpUri(trimmed)) {
-                    is OtpUriParserResult.Success -> {
-                        val accountInfo = with(accountRepository) { parsed.data.toAccountInfo() }
-                        accountRepository.putAccount(accountInfo)
-                        importedCount++
-                    }
-                    else -> { /* skip invalid lines */ }
-                }
-            }
+            val importedCount = importBackupContent(content)
             showToast(
                 getApplication<Application>().getString(R.string.webdav_restore_success, importedCount)
             )
         }
+    }
+
+    fun exportToLocalFile(uri: Uri) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val content = buildBackupContent()
+            val result = runCatching {
+                getApplication<Application>().contentResolver.openOutputStream(uri)?.use {
+                    it.write(content.toByteArray(Charsets.UTF_8))
+                }
+            }
+            _isLoading.value = false
+            if (result.isSuccess) {
+                showToast(R.string.local_backup_success)
+            } else {
+                val msg = result.exceptionOrNull()?.message ?: ""
+                showToast(getApplication<Application>().getString(R.string.local_backup_fail, msg))
+            }
+        }
+    }
+
+    fun importFromLocalFile(uri: Uri) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val content = runCatching {
+                getApplication<Application>().contentResolver.openInputStream(uri)?.use {
+                    it.readBytes().toString(Charsets.UTF_8)
+                }
+            }.getOrElse {
+                val msg = it.message ?: ""
+                showToast(getApplication<Application>().getString(R.string.local_restore_fail, msg))
+                _isLoading.value = false
+                return@launch
+            }
+            if (content.isNullOrBlank()) {
+                showToast(R.string.local_restore_fail_empty)
+                _isLoading.value = false
+                return@launch
+            }
+            val importedCount = importBackupContent(content)
+            _isLoading.value = false
+            showToast(
+                getApplication<Application>().getString(R.string.local_restore_success, importedCount)
+            )
+        }
+    }
+
+    private suspend fun buildBackupContent(): String {
+        val accounts = accountRepository.getAccounts().first()
+        val lines = accounts.mapNotNull { account ->
+            with(accountRepository) {
+                runCatching { account.toExportAccount().url }.getOrNull()
+            }
+        }
+        return lines.joinToString("\n")
+    }
+
+    private suspend fun importBackupContent(content: String): Int {
+        var importedCount = 0
+        content.lines().forEach { line ->
+            val trimmed = line.trim()
+            if (trimmed.isEmpty()) return@forEach
+            when (val parsed = otpUriParser.parseOtpUri(trimmed)) {
+                is OtpUriParserResult.Success -> {
+                    val accountInfo = with(accountRepository) { parsed.data.toAccountInfo() }
+                    accountRepository.putAccount(accountInfo)
+                    importedCount++
+                }
+                else -> { /* skip invalid lines */ }
+            }
+        }
+        return importedCount
     }
 
     private fun showToast(resId: Int) {

@@ -55,6 +55,16 @@
     <string name="account_icon_fetch">获取图标</string>
     <string name="account_icon_fetch_success">图标获取成功</string>
     <string name="account_icon_fetch_fail">图标获取失败，请检查服务商名称或网络连接</string>
+    <string name="backup_title">备份与恢复</string>
+    <string name="local_backup_header">本地文件</string>
+    <string name="local_backup">导出到文件</string>
+    <string name="local_restore">从文件导入</string>
+    <string name="local_backup_success">备份文件保存成功</string>
+    <string name="local_backup_fail">文件备份失败：%1$s</string>
+    <string name="local_restore_success">恢复成功，已导入 %1$d 个账户</string>
+    <string name="local_restore_fail">文件恢复失败：%1$s</string>
+    <string name="local_restore_fail_empty">选择的文件为空</string>
+    <string name="webdav_header">WebDAV</string>
     <string name="settings_title">设置</string>
     <string name="settings_category_security">安全</string>
     <string name="settings_prefs_securemode">安全模式</string>
@@ -69,8 +79,8 @@
     <string name="settings_category_appearance">外观</string>
     <string name="settings_prefs_theme">主题</string>
     <string name="settings_category_backup">备份与恢复</string>
-    <string name="settings_prefs_webdav_backup">WebDAV 备份</string>
-    <string name="settings_prefs_webdav_backup_description">将账户备份到 WebDAV 服务器（支持坚果云等）</string>
+    <string name="settings_prefs_webdav_backup">备份与恢复</string>
+    <string name="settings_prefs_webdav_backup_description">将账户备份到本地文件或 WebDAV 服务器（支持坚果云等）</string>
     <string name="pinsetup_title_create">设置 PIN 码</string>
     <string name="pinsetup_title_confirm">确认 PIN 码</string>
     <string name="pinremove_title">请输入 PIN 码</string>

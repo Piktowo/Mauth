@@ -71,8 +71,8 @@
     <string name="settings_category_appearance">Appearance</string>
     <string name="settings_prefs_theme">Theme</string>
     <string name="settings_category_backup">Backup &amp; Restore</string>
-    <string name="settings_prefs_webdav_backup">WebDAV Backup</string>
-    <string name="settings_prefs_webdav_backup_description">Back up accounts to a WebDAV server</string>
+    <string name="settings_prefs_webdav_backup">Backup &amp; Restore</string>
+    <string name="settings_prefs_webdav_backup_description">Back up accounts to local file or WebDAV server</string>
 
     <string name="pinsetup_title_create">Set a PIN</string>
     <string name="pinsetup_title_confirm">Confirm your PIN</string>
@@ -105,6 +105,17 @@
     <string name="account_icon_fetch_success">Icon fetched successfully</string>
     <string name="account_icon_fetch_fail">Failed to fetch icon. Check the issuer name or your network.</string>
 
+    <string name="backup_title">Backup &amp; Restore</string>
+    <string name="local_backup_header">Local File</string>
+    <string name="local_backup">Export to file</string>
+    <string name="local_restore">Import from file</string>
+    <string name="local_backup_success">Backup file saved successfully</string>
+    <string name="local_backup_fail">File backup failed: %1$s</string>
+    <string name="local_restore_success">Restore successful, imported %1$d accounts</string>
+    <string name="local_restore_fail">File restore failed: %1$s</string>
+    <string name="local_restore_fail_empty">The selected file is empty</string>
+
+    <string name="webdav_header">WebDAV</string>
     <string name="webdav_title">WebDAV Backup</string>
     <string name="webdav_url">Server URL</string>
     <string name="webdav_url_hint">https://dav.example.com/dav/path/</string>

@@ -1,36 +1,41 @@
 package com.xinto.mauth.core.backup
 
-import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
+import okhttp3.Credentials
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 class WebDavClient {
+
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .followRedirects(true)
+        .followSslRedirects(true)
+        .build()
 
     suspend fun put(url: String, username: String, password: String, data: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             runCatching {
                 val fileUrl = ensureFileUrl(url)
-                val bytes = data.toByteArray(Charsets.UTF_8)
-                val connection = URL(fileUrl).openConnection() as HttpURLConnection
-                connection.apply {
-                    requestMethod = "PUT"
-                    doOutput = true
-                    setRequestProperty("Content-Type", "text/plain; charset=utf-8")
-                    setRequestProperty("User-Agent", USER_AGENT)
-                    if (username.isNotEmpty()) {
-                        setRequestProperty("Authorization", basicAuth(username, password))
-                    }
-                    setFixedLengthStreamingMode(bytes.size)
-                    connectTimeout = 15_000
-                    readTimeout = 15_000
+                val body = data.toRequestBody("text/plain; charset=utf-8".toMediaType())
+                val requestBuilder = Request.Builder()
+                    .url(fileUrl)
+                    .put(body)
+                    .header("User-Agent", USER_AGENT)
+                if (username.isNotEmpty()) {
+                    requestBuilder.header("Authorization", Credentials.basic(username, password))
                 }
-                connection.outputStream.use { it.write(bytes) }
-                val code = connection.responseCode
-                connection.disconnect()
-                if (code !in 200..299) {
-                    error("HTTP $code")
+                client.newCall(requestBuilder.build()).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        error("HTTP ${response.code}")
+                    }
                 }
             }
         }
@@ -39,31 +44,21 @@ class WebDavClient {
         withContext(Dispatchers.IO) {
             runCatching {
                 val fileUrl = ensureFileUrl(url)
-                val connection = URL(fileUrl).openConnection() as HttpURLConnection
-                connection.apply {
-                    requestMethod = "GET"
-                    setRequestProperty("User-Agent", USER_AGENT)
-                    if (username.isNotEmpty()) {
-                        setRequestProperty("Authorization", basicAuth(username, password))
+                val requestBuilder = Request.Builder()
+                    .url(fileUrl)
+                    .get()
+                    .header("User-Agent", USER_AGENT)
+                if (username.isNotEmpty()) {
+                    requestBuilder.header("Authorization", Credentials.basic(username, password))
+                }
+                client.newCall(requestBuilder.build()).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        error("HTTP ${response.code}")
                     }
-                    connectTimeout = 15_000
-                    readTimeout = 15_000
+                    response.body?.string() ?: ""
                 }
-                val code = connection.responseCode
-                if (code !in 200..299) {
-                    connection.disconnect()
-                    error("HTTP $code")
-                }
-                val body = connection.inputStream.use { it.readBytes().toString(Charsets.UTF_8) }
-                connection.disconnect()
-                body
             }
         }
-
-    private fun basicAuth(username: String, password: String): String {
-        val credentials = "$username:$password"
-        return "Basic " + Base64.encodeToString(credentials.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
-    }
 
     companion object {
         private const val USER_AGENT = "Mauth/1.0"

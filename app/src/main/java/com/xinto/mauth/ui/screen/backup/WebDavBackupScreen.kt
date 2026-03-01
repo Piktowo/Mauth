@@ -1,6 +1,8 @@
 package com.xinto.mauth.ui.screen.backup
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -41,6 +44,14 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
     val password by viewModel.webDavPassword.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri -> uri?.let { viewModel.exportToLocalFile(it) } }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri -> uri?.let { viewModel.importFromLocalFile(it) } }
+
     BackHandler(onBack = onBack)
     WebDavBackupScreen(
         onBack = onBack,
@@ -53,6 +64,8 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
         isLoading = isLoading,
         onBackup = viewModel::backup,
         onRestore = viewModel::restore,
+        onLocalBackup = { exportLauncher.launch("mauth_backup.txt") },
+        onLocalRestore = { importLauncher.launch(arrayOf("text/plain", "*/*")) },
     )
 }
 
@@ -69,13 +82,15 @@ fun WebDavBackupScreen(
     isLoading: Boolean,
     onBackup: () -> Unit,
     onRestore: () -> Unit,
+    onLocalBackup: () -> Unit,
+    onLocalRestore: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.webdav_title)) },
+                title = { Text(stringResource(R.string.backup_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -106,6 +121,37 @@ fun WebDavBackupScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item {
+                    Text(
+                        text = stringResource(R.string.local_backup_header),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onLocalBackup
+                        ) {
+                            Text(stringResource(R.string.local_backup))
+                        }
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onLocalRestore
+                        ) {
+                            Text(stringResource(R.string.local_restore))
+                        }
+                    }
+                }
+                item {
+                    Text(
+                        text = stringResource(R.string.webdav_header),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
                 item {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
