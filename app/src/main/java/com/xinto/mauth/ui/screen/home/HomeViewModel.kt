@@ -24,6 +24,7 @@ import com.xinto.mauth.domain.account.model.DomainAccountInfo
 import com.xinto.mauth.domain.otp.OtpRepository
 import com.xinto.mauth.util.catchMap
 import kotlinx.collections.immutable.adapters.ImmutableListAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,6 +42,14 @@ class HomeViewModel(
     private val otp: OtpRepository,
     private val qr: QrRepository
 ) : AndroidViewModel(application) {
+
+    init {
+        // Clean up icon files that are no longer referenced by any account (e.g. left by
+        // previous deletions that did not remove files, app crashes, or old app versions).
+        viewModelScope.launch(Dispatchers.IO) {
+            accounts.cleanupOrphanedIconFiles(getApplication<Application>().filesDir)
+        }
+    }
 
     val state = accounts.getAccounts()
         .map {

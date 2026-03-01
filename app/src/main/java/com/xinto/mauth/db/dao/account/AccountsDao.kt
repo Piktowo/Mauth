@@ -17,6 +17,9 @@ interface AccountsDao {
     @Query("SELECT * FROM accounts WHERE id = :id")
     suspend fun getById(id: UUID): EntityAccount?
 
+    @Query("SELECT * FROM accounts WHERE id in (:ids)")
+    suspend fun getByIds(ids: Set<UUID>): List<EntityAccount>
+
     @Upsert
     suspend fun upsert(entityAccount: EntityAccount)
 
