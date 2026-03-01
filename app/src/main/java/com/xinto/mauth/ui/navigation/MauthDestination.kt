@@ -46,4 +46,7 @@ sealed class MauthDestination(val isFullscreenDialog: Boolean = false) : Parcela
 
     @Parcelize
     data object About : MauthDestination()
+
+    @Parcelize
+    data object WebDavBackup : MauthDestination()
 }

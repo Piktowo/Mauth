@@ -22,7 +22,6 @@ import com.xinto.mauth.ui.component.form.singleFormfield
 @Stable
 class AccountForm(private val initial: DomainAccountInfo) : Form<DomainAccountInfo>(), LazyGridForm {
 
-    val icon = IconFormField(initial = initial.icon)
     val label = TextFormField(
         initial = initial.label,
         label = R.string.account_data_label,
@@ -34,6 +33,7 @@ class AccountForm(private val initial: DomainAccountInfo) : Form<DomainAccountIn
         label = R.string.account_data_issuer,
         icon = R.drawable.ic_apartment
     )
+    val icon = IconFormField(initial = initial.icon, issuerProvider = { issuer.value })
     val secret = PasswordFormField(
         initial = initial.secret,
         label = R.string.account_data_secret,
