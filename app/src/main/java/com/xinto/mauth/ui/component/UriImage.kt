@@ -2,6 +2,7 @@ package com.xinto.mauth.ui.component
 
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -12,7 +13,7 @@ import coil.request.ImageRequest
 @Composable
 fun UriImage(
     uri: Uri,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
     contentDescription: String? = null
 ) {
     val context = LocalContext.current

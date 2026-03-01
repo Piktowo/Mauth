@@ -13,12 +13,10 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -56,63 +54,73 @@ class IconFormField(
                 value = makePermanentUri(context, it)
             }
         )
-        Row(
+        Box(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Surface(
-                    modifier = Modifier.size(96.dp),
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = CircleShape,
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline
-                    ),
-                    onClick = {
-                        imageSelectLauncher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
+            Surface(
+                modifier = Modifier.size(96.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = CircleShape,
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline
+                ),
+                onClick = {
+                    imageSelectLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
                         )
-                    }
-                ) {
-                    if (value != null) {
-                        UriImage(uri = value!!)
-                    } else {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                modifier = Modifier.size(36.dp),
-                                painter = painterResource(R.drawable.ic_add_a_photo),
-                                contentDescription = null
-                            )
-                        }
+                    )
+                }
+            ) {
+                if (value != null) {
+                    UriImage(uri = value!!)
+                } else {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            modifier = Modifier.size(36.dp),
+                            painter = painterResource(R.drawable.ic_add_a_photo),
+                            contentDescription = null
+                        )
                     }
                 }
             }
             if (issuerProvider != null) {
-                IconButton(
-                    onClick = {
-                        val issuer = issuerProvider().trim()
-                        if (issuer.isEmpty()) return@IconButton
-                        scope.launch {
-                            val uri = fetchIconForIssuer(context, issuer)
-                            if (uri != null) {
-                                value = uri
-                                Toast.makeText(context, R.string.account_icon_fetch_success, Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, R.string.account_icon_fetch_fail, Toast.LENGTH_LONG).show()
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .align(Alignment.Center),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Surface(
+                        modifier = Modifier.size(32.dp),
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shadowElevation = 4.dp,
+                        onClick = {
+                            val issuer = issuerProvider().trim()
+                            if (issuer.isEmpty()) return@Surface
+                            scope.launch {
+                                val uri = fetchIconForIssuer(context, issuer)
+                                if (uri != null) {
+                                    value = uri
+                                    Toast.makeText(context, R.string.account_icon_fetch_success, Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, R.string.account_icon_fetch_fail, Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                modifier = Modifier.size(18.dp),
+                                painter = painterResource(R.drawable.ic_search),
+                                contentDescription = context.getString(R.string.account_icon_fetch),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_search),
-                        contentDescription = context.getString(R.string.account_icon_fetch)
-                    )
                 }
             }
         }
@@ -150,16 +158,23 @@ class IconFormField(
 
     private suspend fun fetchIconForIssuer(context: Context, issuer: String): Uri? =
         withContext(Dispatchers.IO) {
+            val domain = issuer.lowercase()
             val candidates = listOf(
-                "https://logo.clearbit.com/${issuer.lowercase()}.com",
-                "https://logo.clearbit.com/${issuer.lowercase()}",
-                "https://icons.bitwarden.net/${issuer.lowercase()}.com/icon.png",
+                // Google 高清 favicon（128px），提供官方品牌图标
+                "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}.com&size=128",
+                // Clearbit logo API — 提供矢量转换的高清品牌 logo
+                "https://logo.clearbit.com/${domain}.com",
+                // DuckDuckGo favicon（高质量备用）
+                "https://icons.duckduckgo.com/ip3/${domain}.com.ico",
+                // Bitwarden 图标服务（最后备选）
+                "https://icons.bitwarden.net/${domain}.com/icon.png",
             )
             for (urlString in candidates) {
                 try {
                     val connection = URL(urlString).openConnection() as HttpURLConnection
                     connection.connectTimeout = 10_000
                     connection.readTimeout = 10_000
+                    connection.instanceFollowRedirects = true
                     connection.connect()
                     if (connection.responseCode !in 200..299) {
                         connection.disconnect()
@@ -167,7 +182,8 @@ class IconFormField(
                     }
                     val bitmap = BitmapFactory.decodeStream(connection.inputStream)
                     connection.disconnect()
-                    if (bitmap == null) continue
+                    // 过滤掉分辨率太低的图标（宽或高小于 32px 的通常是占位图）
+                    if (bitmap == null || (bitmap.width < 32 || bitmap.height < 32)) continue
 
                     val destination = File(context.filesDir, "${id}_${UUID.randomUUID()}.png").apply {
                         if (exists()) delete()
@@ -179,7 +195,7 @@ class IconFormField(
                     value?.toFile()?.delete()
                     return@withContext destination.toUri()
                 } catch (_: Exception) {
-                    // try next candidate
+                    // 尝试下一个候选 URL
                 }
             }
             null
