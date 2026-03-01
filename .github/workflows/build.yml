@@ -1,5 +1,26 @@
 name: Build APK
 
+# ────────────────────────────────────────────────────────────────────
+# 签名说明：
+#
+# 【不需要任何配置】
+#   工作流会自动生成一次性临时密钥来签名 Release APK。
+#   适合日常 CI 验证构建，无需在 GitHub 上配置任何 Secrets。
+#   注意：每次构建的签名不同，无法直接覆盖安装，需先卸载旧版本。
+#
+# 【可选：配置固定签名密钥（推荐用于正式分发）】
+#   如果希望每次构建使用同一个密钥（用户可直接覆盖安装），
+#   请在仓库的 Settings → Secrets and variables → Actions 中添加：
+#
+#     RELEASE_KEYSTORE_BASE64   — 用 base64 编码后的 .jks / .keystore 文件
+#                                 生成方法：base64 -w 0 your-key.jks
+#     RELEASE_STORE_PASSWORD    — keystore 密码
+#     RELEASE_KEY_ALIAS         — key 别名
+#     RELEASE_KEY_PASSWORD      — key 密码
+#
+#   配置好后，工作流会自动优先使用你的真实密钥，无需修改任何代码。
+# ────────────────────────────────────────────────────────────────────
+
 on:
   push:
     branches:
@@ -29,25 +50,49 @@ jobs:
       - name: chmod gradlew
         run: chmod +x gradlew
 
-      - name: 生成临时签名密钥
+      # ── 签名密钥准备：优先使用真实密钥，否则生成临时密钥 ──────────────
+      - name: 准备签名密钥（真实密钥优先）
+        id: keystore
         run: |
-          keytool -genkeypair -v \
-            -keystore ${{ github.workspace }}/keystore.jks \
-            -alias mauth \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 1 \
-            -storepass android \
-            -keypass android \
-            -dname "CN=CI Build, OU=CI, O=Mauth, L=Unknown, S=Unknown, C=US"
+          if [ -n "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" ]; then
+            # 校验四个 Secret 必须同时存在
+            if [ -z "${{ secrets.RELEASE_STORE_PASSWORD }}" ] || \
+               [ -z "${{ secrets.RELEASE_KEY_ALIAS }}" ] || \
+               [ -z "${{ secrets.RELEASE_KEY_PASSWORD }}" ]; then
+              echo "::error::检测到 RELEASE_KEYSTORE_BASE64 已设置，但以下 Secret 缺失："
+              echo "::error::  RELEASE_STORE_PASSWORD / RELEASE_KEY_ALIAS / RELEASE_KEY_PASSWORD"
+              echo "::error::请确保四个签名 Secret 同时配置，否则请将它们全部删除以使用临时密钥。"
+              exit 1
+            fi
+            echo "使用仓库 Secrets 中配置的真实签名密钥"
+            echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > "${{ github.workspace }}/keystore.jks"
+            echo "KEYSTORE_PATH=${{ github.workspace }}/keystore.jks"      >> "$GITHUB_ENV"
+            echo "KEYSTORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }}" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=${{ secrets.RELEASE_KEY_ALIAS }}"              >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}"        >> "$GITHUB_ENV"
+          else
+            echo "未检测到签名 Secrets，自动生成临时密钥（仅用于 CI 测试构建）"
+            keytool -genkeypair -v \
+              -keystore "${{ github.workspace }}/keystore.jks" \
+              -alias mauth \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 1 \
+              -storepass android \
+              -keypass android \
+              -dname "CN=CI Build, OU=CI, O=Mauth, L=Unknown, S=Unknown, C=US"
+            echo "KEYSTORE_PATH=${{ github.workspace }}/keystore.jks" >> "$GITHUB_ENV"
+            echo "KEYSTORE_PASSWORD=android"                          >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=mauth"                                    >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=android"                               >> "$GITHUB_ENV"
+          fi
 
       - name: 构建并签名 Release APK
         run: ./gradlew assembleRelease
-        env:
-          KEYSTORE_PATH: ${{ github.workspace }}/keystore.jks
-          KEYSTORE_PASSWORD: android
-          KEY_ALIAS: mauth
-          KEY_PASSWORD: android
+
+      - name: 清理签名密钥文件
+        if: always()
+        run: rm -f "${{ github.workspace }}/keystore.jks"
 
       - name: 上传 APK
         uses: actions/upload-artifact@v4

@@ -73,6 +73,51 @@ Mauth 可在 F-Droid 和 GitHub Releases 页面下载。
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75">](https://f-droid.org/en/packages/com.xinto.mauth)
 [<img src="github/get_it_on_github.png" height="75">](https://github.com/X1nto/Mauth/releases)
 
+# CI 构建与签名
+
+## 无需任何配置即可构建
+每次推送代码后，GitHub Actions 会自动构建一个 **Release APK**，并用临时生成的一次性密钥签名。  
+**不需要在仓库里配置任何 Secrets**，CI 开箱即用。
+
+> ⚠️ 注意：临时密钥每次构建都不同，因此**不能覆盖安装**，需先卸载旧版本再安装新版本。
+
+## 可选：配置固定签名密钥（推荐用于正式分发）
+
+如果你希望每次 CI 构建的 APK 都用同一个密钥签名（用户可以直接覆盖安装），请按以下步骤操作：
+
+**第一步：生成签名密钥**
+
+> 💡 安全提示：命令行中明文输入的密码会被记录在 shell 历史记录里。建议执行完成后运行 `history -c` 清除历史，或将密码通过环境变量传入（如 `export KS_PASS=...`）而非直接写在命令里。
+
+```bash
+keytool -genkeypair \
+  -keystore my-release-key.jks \
+  -alias my-key-alias \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -storepass 你的keystore密码 \
+  -keypass 你的key密码 \
+  -dname "CN=Your Name, O=Your Org, C=CN"
+```
+
+**第二步：将密钥文件转为 Base64**
+
+```bash
+base64 -w 0 my-release-key.jks
+```
+
+**第三步：在 GitHub 仓库中配置 Secrets**
+
+进入仓库 → **Settings → Secrets and variables → Actions → New repository secret**，添加以下四个 Secret：
+
+| Secret 名称 | 值 |
+|---|---|
+| `RELEASE_KEYSTORE_BASE64` | 上一步 base64 命令的输出内容 |
+| `RELEASE_STORE_PASSWORD` | keystore 密码 |
+| `RELEASE_KEY_ALIAS` | key 别名（如 `my-key-alias`） |
+| `RELEASE_KEY_PASSWORD` | key 密码 |
+
+配置完成后，下次推送代码，CI 就会自动使用你的真实密钥签名，无需修改任何代码。
+
 # 贡献
 
 翻译请访问 https://toolate.othing.xyz/projects/mauth/
