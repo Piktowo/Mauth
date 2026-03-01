@@ -98,8 +98,13 @@ jobs:
         run: |
           cd app/build/outputs/apk/release
           for apk in app-*.apk; do
+            [ -f "$apk" ] || continue
             # 从文件名中提取架构标识，如 app-arm64-v8a-release.apk → arm64-v8a
-            abi=$(echo "$apk" | sed -E 's/^app-//;s/-release\.apk$//')
+            abi=$(echo "$apk" | sed -n -E 's/^app-(.+)-release\.apk$/\1/p')
+            if [ -z "$abi" ]; then
+              echo "⚠️ 跳过无法识别的文件: $apk"
+              continue
+            fi
             mv "$apk" "mauth-${abi}.apk"
           done
           ls -lh *.apk
