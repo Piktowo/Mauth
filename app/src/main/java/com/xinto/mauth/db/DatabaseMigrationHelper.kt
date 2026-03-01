@@ -42,11 +42,16 @@ internal object DatabaseMigrationHelper {
                 null,
             )
 
-            // Export into a new encrypted copy
-            db.execSQL("ATTACH DATABASE '${tmpFile.absolutePath}' AS encrypted KEY \"x'$hexKey'\"")
-            db.execSQL("SELECT sqlcipher_export('encrypted')")
-            db.execSQL("DETACH DATABASE encrypted")
-            db.close()
+            try {
+                // Export into a new encrypted copy.
+                // sqlcipher_export() is a SELECT function; execSQL() rejects SELECT statements
+                // in SQLCipher, so rawQuery() must be used here.
+                db.execSQL("ATTACH DATABASE '${tmpFile.absolutePath}' AS encrypted KEY \"x'$hexKey'\"")
+                db.rawQuery("SELECT sqlcipher_export('encrypted')", null).use { it.moveToFirst() }
+                db.execSQL("DETACH DATABASE encrypted")
+            } finally {
+                db.close()
+            }
 
             // Delete WAL/SHM files that belong to the plaintext database
             File(dbDir, "$dbName-wal").delete()
