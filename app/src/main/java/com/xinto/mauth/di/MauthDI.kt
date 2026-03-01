@@ -15,6 +15,9 @@ import com.xinto.mauth.core.otp.transformer.KeyTransformer
 import com.xinto.mauth.core.settings.DefaultSettings
 import com.xinto.mauth.core.settings.Settings
 import com.xinto.mauth.db.AccountDatabase
+import com.xinto.mauth.db.DatabaseKeyManager
+import com.xinto.mauth.db.DatabaseMigrationHelper
+import net.zetetic.database.sqlcipher.SupportFactory
 import com.xinto.mauth.domain.AuthRepository
 import com.xinto.mauth.domain.QrRepository
 import com.xinto.mauth.domain.SettingsRepository
@@ -50,7 +53,12 @@ object MauthDI {
 
     val DbModule = module {
         single {
-            Room.databaseBuilder(androidContext(), AccountDatabase::class.java, "accounts")
+            val context = androidContext()
+            val passphrase = DatabaseKeyManager.getOrCreateKey(context)
+            DatabaseMigrationHelper.encryptIfPlaintext(context, "accounts", passphrase)
+            val factory = SupportFactory(passphrase)
+            Room.databaseBuilder(context, AccountDatabase::class.java, "accounts")
+                .openHelperFactory(factory)
                 .addMigrations(AccountDatabase.Migrate3to4)
                 .addMigrations(AccountDatabase.Migrate4To5)
                 .build()
