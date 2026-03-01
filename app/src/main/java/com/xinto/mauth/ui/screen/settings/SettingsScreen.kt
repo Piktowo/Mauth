@@ -34,6 +34,7 @@ fun SettingsScreen(
     onSetupPinCode: () -> Unit,
     onDisablePinCode: () -> Unit,
     onThemeNavigate: () -> Unit,
+    onWebDavBackupNavigate: () -> Unit,
 ) {
     val viewModel: SettingsViewModel = koinViewModel()
     val secureMode by viewModel.secureMode.collectAsStateWithLifecycle()
@@ -71,7 +72,8 @@ fun SettingsScreen(
             val promptData = if (it) setupPromptData else disablePromptData
             biometricHandler.requestBiometrics(promptData)
         },
-        onThemeNavigate = onThemeNavigate
+        onThemeNavigate = onThemeNavigate,
+        onWebDavBackupNavigate = onWebDavBackupNavigate,
     )
 }
 
@@ -86,7 +88,8 @@ fun SettingsScreen(
     showBiometrics: Boolean,
     biometrics: Boolean,
     onBiometricsChange: (Boolean) -> Unit,
-    onThemeNavigate: () -> Unit
+    onThemeNavigate: () -> Unit,
+    onWebDavBackupNavigate: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -153,6 +156,17 @@ fun SettingsScreen(
                     title = {
                         Text(stringResource(R.string.settings_prefs_theme))
                     },
+                )
+            }
+            itemGrouped(header = { Text(stringResource(R.string.settings_category_backup)) }) {
+                SettingsNavigateItem(
+                    onClick = onWebDavBackupNavigate,
+                    title = {
+                        Text(stringResource(R.string.settings_prefs_webdav_backup))
+                    },
+                    description = {
+                        Text(stringResource(R.string.settings_prefs_webdav_backup_description))
+                    }
                 )
             }
         }

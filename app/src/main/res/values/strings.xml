@@ -70,6 +70,9 @@
     <string name="settings_biometrics_disable_cancel">Cancel</string>
     <string name="settings_category_appearance">Appearance</string>
     <string name="settings_prefs_theme">Theme</string>
+    <string name="settings_category_backup">Backup &amp; Restore</string>
+    <string name="settings_prefs_webdav_backup">WebDAV Backup</string>
+    <string name="settings_prefs_webdav_backup_description">Back up accounts to a WebDAV server</string>
 
     <string name="pinsetup_title_create">Set a PIN</string>
     <string name="pinsetup_title_confirm">Confirm your PIN</string>
@@ -97,4 +100,20 @@
     <string name="about_version">Version v%1$s</string>
     <string name="about_links_source">Source</string>
     <string name="about_links_feedback">Feedback</string>
-</resources>
+
+    <string name="account_icon_fetch">Fetch icon</string>
+    <string name="account_icon_fetch_success">Icon fetched successfully</string>
+    <string name="account_icon_fetch_fail">Failed to fetch icon. Check the issuer name or your network.</string>
+
+    <string name="webdav_title">WebDAV Backup</string>
+    <string name="webdav_url">Server URL</string>
+    <string name="webdav_url_hint">https://dav.example.com/path/</string>
+    <string name="webdav_username">Username</string>
+    <string name="webdav_password">Password</string>
+    <string name="webdav_backup">Backup now</string>
+    <string name="webdav_restore">Restore now</string>
+    <string name="webdav_backup_success">Backup successful</string>
+    <string name="webdav_backup_fail">Backup failed: %1$s</string>
+    <string name="webdav_restore_success">Restore successful, imported %1$d accounts</string>
+    <string name="webdav_restore_fail">Restore failed: %1$s</string>
+    <string name="webdav_url_required">Server URL is required</string></resources>

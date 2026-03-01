@@ -38,6 +38,7 @@ import com.xinto.mauth.ui.screen.about.AboutScreen
 import com.xinto.mauth.ui.screen.account.AddAccountScreen
 import com.xinto.mauth.ui.screen.account.EditAccountScreen
 import com.xinto.mauth.ui.screen.auth.AuthScreen
+import com.xinto.mauth.ui.screen.backup.WebDavBackupScreen
 import com.xinto.mauth.ui.screen.export.ExportScreen
 import com.xinto.mauth.ui.screen.home.HomeScreen
 import com.xinto.mauth.ui.screen.pinremove.PinRemoveScreen
@@ -234,11 +235,17 @@ class MainActivity : FragmentActivity() {
                                     },
                                     onThemeNavigate = {
                                         navigator.navigate(MauthDestination.Theme)
+                                    },
+                                    onWebDavBackupNavigate = {
+                                        navigator.navigate(MauthDestination.WebDavBackup)
                                     }
                                 )
                             }
                             is MauthDestination.About -> {
                                 AboutScreen(onBack = navigator::pop)
+                            }
+                            is MauthDestination.WebDavBackup -> {
+                                WebDavBackupScreen(onBack = navigator::pop)
                             }
                             is MauthDestination.AddAccount -> {
                                 AddAccountScreen(
