@@ -12,6 +12,7 @@ class WebDavClient {
         withContext(Dispatchers.IO) {
             runCatching {
                 val fileUrl = ensureFileUrl(url)
+                val bytes = data.toByteArray(Charsets.UTF_8)
                 val connection = URL(fileUrl).openConnection() as HttpURLConnection
                 connection.apply {
                     requestMethod = "PUT"
@@ -21,10 +22,11 @@ class WebDavClient {
                     if (username.isNotEmpty()) {
                         setRequestProperty("Authorization", basicAuth(username, password))
                     }
+                    setFixedLengthStreamingMode(bytes.size)
                     connectTimeout = 15_000
                     readTimeout = 15_000
                 }
-                connection.outputStream.use { it.write(data.toByteArray(Charsets.UTF_8)) }
+                connection.outputStream.use { it.write(bytes) }
                 val code = connection.responseCode
                 connection.disconnect()
                 if (code !in 200..299) {

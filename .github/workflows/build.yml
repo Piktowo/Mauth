@@ -94,8 +94,42 @@ jobs:
         if: always()
         run: rm -f "${{ github.workspace }}/keystore.jks"
 
-      - name: 上传 APK
+      - name: 重命名 APK 文件（按架构）
+        run: |
+          cd app/build/outputs/apk/release
+          for apk in app-*.apk; do
+            # 从文件名中提取架构标识，如 app-arm64-v8a-release.apk → arm64-v8a
+            abi=$(echo "$apk" | sed -E 's/^app-//;s/-release\.apk$//')
+            mv "$apk" "mauth-${abi}.apk"
+          done
+          ls -lh *.apk
+
+      - name: 上传 APK（arm64-v8a）
         uses: actions/upload-artifact@v4
         with:
-          name: mauth
-          path: app/build/outputs/apk/release/app-*.apk
+          name: mauth-arm64-v8a
+          path: app/build/outputs/apk/release/mauth-arm64-v8a.apk
+
+      - name: 上传 APK（armeabi-v7a）
+        uses: actions/upload-artifact@v4
+        with:
+          name: mauth-armeabi-v7a
+          path: app/build/outputs/apk/release/mauth-armeabi-v7a.apk
+
+      - name: 上传 APK（x86_64）
+        uses: actions/upload-artifact@v4
+        with:
+          name: mauth-x86_64
+          path: app/build/outputs/apk/release/mauth-x86_64.apk
+
+      - name: 上传 APK（x86）
+        uses: actions/upload-artifact@v4
+        with:
+          name: mauth-x86
+          path: app/build/outputs/apk/release/mauth-x86.apk
+
+      - name: 上传 APK（universal）
+        uses: actions/upload-artifact@v4
+        with:
+          name: mauth-universal
+          path: app/build/outputs/apk/release/mauth-universal.apk
