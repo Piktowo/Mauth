@@ -26,6 +26,19 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            // CI 或本地构建时，若配置了签名环境变量则使用自定义签名，否则回退到 debug 签名
+            val ksPath = System.getenv("KEYSTORE_PATH")
+            if (ksPath != null) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             // Distinguish between debug and release version
@@ -35,7 +48,13 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = if (System.getenv("KEYSTORE_PATH") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
@@ -163,6 +182,9 @@ dependencies {
 
     val accompanistVersion = "0.37.3"
     implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
+
+    implementation("net.zetetic:sqlcipher-android:4.6.1")
+    implementation("androidx.sqlite:sqlite:2.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")

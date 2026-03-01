@@ -8,7 +8,7 @@ class OtpConverter {
 
     @TypeConverter
     fun fromIntToDigest(value: Int): OtpDigest {
-        return OtpDigest.values()[value]
+        return OtpDigest.entries[value]
     }
 
     @TypeConverter
@@ -18,7 +18,7 @@ class OtpConverter {
 
     @TypeConverter
     fun fromIntToType(value: Int): OtpType {
-        return OtpType.values()[value]
+        return OtpType.entries[value]
     }
 
     @TypeConverter

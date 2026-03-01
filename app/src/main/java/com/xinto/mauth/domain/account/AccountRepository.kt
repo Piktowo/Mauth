@@ -12,11 +12,13 @@ import com.xinto.mauth.domain.SettingsRepository
 import com.xinto.mauth.domain.account.model.DomainAccount
 import com.xinto.mauth.domain.account.model.DomainAccountInfo
 import com.xinto.mauth.domain.account.model.DomainExportAccount
+import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.io.File
 import java.util.UUID
 
 class AccountRepository(
@@ -68,7 +70,28 @@ class AccountRepository(
     }
 
     suspend fun deleteAccounts(ids: List<UUID>) {
+        // Collect icon file paths before deleting DB records so we can clean up files afterwards
+        val iconFiles = accountsDao.getByIds(ids.toSet())
+            .mapNotNull { runCatching { it.icon?.toFile() }.getOrNull() }
         accountsDao.delete(ids.toSet())
+        iconFiles.forEach { it.delete() }
+    }
+
+    /**
+     * Deletes PNG files in [filesDir] that are no longer referenced by any account.
+     * Only files matching the icon naming pattern `<int>_<UUID>.png` (created by
+     * [com.xinto.mauth.ui.screen.account.IconFormField]) are considered candidates.
+     * Call this once at startup to clean up orphaned icon files left by crashes, imports,
+     * or previous versions of the app that did not perform file cleanup.
+     */
+    suspend fun cleanupOrphanedIconFiles(filesDir: File) {
+        val iconFilePattern = Regex("""^\d+_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.png$""")
+        val usedFiles = accountsDao.getAll()
+            .mapNotNull { runCatching { it.icon?.toFile() }.getOrNull() }
+            .toSet()
+        filesDir.listFiles()
+            ?.filter { it.name.matches(iconFilePattern) && it !in usedFiles }
+            ?.forEach { it.delete() }
     }
 
     suspend fun DomainAccount.toExportAccount(): DomainExportAccount {
