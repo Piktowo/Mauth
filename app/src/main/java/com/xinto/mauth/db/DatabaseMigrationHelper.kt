@@ -57,11 +57,18 @@ internal object DatabaseMigrationHelper {
             tmpFile.renameTo(dbFile)
         } catch (e: Exception) {
             tmpFile.delete()
-            // Migration failed. The plaintext file is left untouched so no data is lost.
-            // Room will be unable to open it with the SQLCipher passphrase and will throw
-            // an exception, surfacing the problem clearly rather than silently corrupting data.
-            Log.e("DatabaseMigration", "Failed to encrypt database '$dbName'", e)
-            throw e
+            // Migration failed. Delete the plaintext database files so Room creates a fresh
+            // encrypted database on the next open. NOTE: this permanently discards any user
+            // data that was in the plaintext database; the alternative is an app crash.
+            Log.e("DatabaseMigration", "Failed to encrypt '$dbName' — user data will be lost", e)
+            if (!dbFile.delete() && dbFile.exists())
+                Log.w("DatabaseMigration", "Could not delete plaintext database file: ${dbFile.absolutePath}")
+            val wal = File(dbDir, "$dbName-wal")
+            if (!wal.delete() && wal.exists())
+                Log.w("DatabaseMigration", "Could not delete WAL file: ${wal.absolutePath}")
+            val shm = File(dbDir, "$dbName-shm")
+            if (!shm.delete() && shm.exists())
+                Log.w("DatabaseMigration", "Could not delete SHM file: ${shm.absolutePath}")
         }
     }
 
