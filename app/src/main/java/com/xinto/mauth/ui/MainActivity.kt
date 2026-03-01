@@ -110,7 +110,7 @@ class MainActivity : FragmentActivity() {
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     val navigator = rememberNavController(initialScreen)
 

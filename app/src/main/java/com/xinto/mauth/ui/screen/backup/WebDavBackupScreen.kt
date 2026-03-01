@@ -7,21 +7,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -85,11 +88,11 @@ fun WebDavBackupScreen(
     onLocalBackup: () -> Unit,
     onLocalRestore: () -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
                 title = { Text(stringResource(R.string.backup_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -119,81 +122,85 @@ fun WebDavBackupScreen(
                     .padding(paddingValues)
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    Text(
-                        text = stringResource(R.string.local_backup_header),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = onLocalBackup
+                    ElevatedCard(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text(stringResource(R.string.local_backup))
-                        }
-                        OutlinedButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = onLocalRestore
-                        ) {
-                            Text(stringResource(R.string.local_restore))
+                            Text(
+                                text = stringResource(R.string.local_backup_header),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = onLocalBackup
+                            ) {
+                                Text(stringResource(R.string.local_backup))
+                            }
+                            FilledTonalButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = onLocalRestore
+                            ) {
+                                Text(stringResource(R.string.local_restore))
+                            }
                         }
                     }
                 }
                 item {
-                    Text(
-                        text = stringResource(R.string.webdav_header),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                }
-                item {
-                    OutlinedTextField(
+                    ElevatedCard(
                         modifier = Modifier.fillMaxWidth(),
-                        value = url,
-                        onValueChange = onUrlChange,
-                        label = { Text(stringResource(R.string.webdav_url)) },
-                        placeholder = { Text(stringResource(R.string.webdav_url_hint)) },
-                        singleLine = true,
-                    )
-                }
-                item {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = username,
-                        onValueChange = onUsernameChange,
-                        label = { Text(stringResource(R.string.webdav_username)) },
-                        singleLine = true,
-                    )
-                }
-                item {
-                    OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = password,
-                        onValueChange = onPasswordChange,
-                        label = { Text(stringResource(R.string.webdav_password)) },
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                    )
-                }
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = onBackup
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text(stringResource(R.string.webdav_backup))
-                        }
-                        OutlinedButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = onRestore
-                        ) {
-                            Text(stringResource(R.string.webdav_restore))
+                            Text(
+                                text = stringResource(R.string.webdav_header),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = url,
+                                onValueChange = onUrlChange,
+                                label = { Text(stringResource(R.string.webdav_url)) },
+                                placeholder = { Text(stringResource(R.string.webdav_url_hint)) },
+                                singleLine = true,
+                            )
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = username,
+                                onValueChange = onUsernameChange,
+                                label = { Text(stringResource(R.string.webdav_username)) },
+                                singleLine = true,
+                            )
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = password,
+                                onValueChange = onPasswordChange,
+                                label = { Text(stringResource(R.string.webdav_password)) },
+                                visualTransformation = PasswordVisualTransformation(),
+                                singleLine = true,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = onBackup
+                            ) {
+                                Text(stringResource(R.string.webdav_backup))
+                            }
+                            FilledTonalButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = onRestore
+                            ) {
+                                Text(stringResource(R.string.webdav_restore))
+                            }
                         }
                     }
                 }

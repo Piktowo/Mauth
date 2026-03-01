@@ -1,7 +1,6 @@
 package com.xinto.mauth.ui.screen.home.component
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,7 +29,7 @@ fun HomeDeleteAccountsDialog(
             Text(stringResource(R.string.home_delete_subtitle))
         },
         confirmButton = {
-            FilledTonalButton(onClick = onConfirm) {
+            TextButton(onClick = onConfirm) {
                 Text(stringResource(R.string.home_delete_button_delete))
             }
         },

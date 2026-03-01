@@ -112,7 +112,7 @@ fun HomeScreen(
 ) {
     var showAddSheet by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     HomeScaffold(
         isSelectionActive = selectedAccounts.isNotEmpty(),
         onAdd = {
