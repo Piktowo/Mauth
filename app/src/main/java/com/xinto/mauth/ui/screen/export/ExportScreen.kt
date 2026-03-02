@@ -153,7 +153,8 @@ fun ExportScreen(
                         Icon(
                             modifier = Modifier.size(72.dp),
                             painter = painterResource(R.drawable.ic_no_accounts),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MiuixTheme.colorScheme.onBackground,
                         )
                         Text(
                             text = stringResource(R.string.export_state_empty),
@@ -169,7 +170,8 @@ fun ExportScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_error),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MiuixTheme.colorScheme.onBackground,
                         )
                     }
                 }

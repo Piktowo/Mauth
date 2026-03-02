@@ -76,7 +76,8 @@ class IconFormField(
                         Icon(
                             modifier = Modifier.size(36.dp),
                             painter = painterResource(R.drawable.ic_add_a_photo),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MiuixTheme.colorScheme.onBackground,
                         )
                     }
                 }

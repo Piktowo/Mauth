@@ -153,21 +153,6 @@ fun PinScaffold_WithDescription() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
         )
     }
-
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-@Composable
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun PinScaffold_WithDescription() {
-    MauthTheme {
-        PinScaffold(
-            description = {
-                Text("Enter PIN")
-            },
-            codeLength = 5,
-            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -181,5 +166,4 @@ fun PinScaffold_WithoutDescription() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
         )
     }
-}
 }

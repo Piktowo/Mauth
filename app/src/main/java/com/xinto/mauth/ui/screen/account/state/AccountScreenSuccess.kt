@@ -19,8 +19,9 @@ fun AccountScreenSuccess(form: AccountForm) {
             .fillMaxSize()
             .overScrollVertical(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(16.dp),
-        columns = GridCells.Fixed(1),
+        columns = GridCells.Fixed(2),
         overscrollEffect = null,
     ) {
         form(form)
