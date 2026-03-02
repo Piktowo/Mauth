@@ -1,6 +1,8 @@
 ﻿package com.xinto.mauth.ui.screen.about
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,14 +60,21 @@ fun AboutScreen(
                         .padding(top = 16.dp, bottom = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
+                    // 启动器图标外观：深紫色背景 + 前景图标，复原真实的应用图标样式
+                    Box(
                         modifier = Modifier
                             .size(96.dp)
-                            .clip(RoundedCornerShape(24.dp)),
-                        tint = Color.Unspecified,
-                    )
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(Color(0xFF420042)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp),
+                            tint = Color.Unspecified,
+                        )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.app_name),

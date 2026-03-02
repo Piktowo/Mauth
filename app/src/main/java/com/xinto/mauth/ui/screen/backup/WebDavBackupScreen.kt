@@ -125,30 +125,37 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                                 visualTransformation = PasswordVisualTransformation(),
                                 maxLines = 1,
                             )
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = viewModel::testConnection,
-                            ) {
-                                Text(stringResource(R.string.webdav_test_connection))
-                            }
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = viewModel::backup,
-                                colors = ButtonDefaults.buttonColorsPrimary(),
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.webdav_backup),
-                                    color = MiuixTheme.colorScheme.background,
-                                )
-                            }
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = viewModel::restore,
-                            ) {
-                                Text(stringResource(R.string.webdav_restore))
-                            }
-                            Spacer(modifier = Modifier.height(4.dp))
                         }
+                    }
+
+                    // 操作按钮移到卡片外面，与输入表单分离（符合 Miuix 规范）
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = viewModel::testConnection,
+                        ) {
+                            Text(stringResource(R.string.webdav_test_connection))
+                        }
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = viewModel::backup,
+                            colors = ButtonDefaults.buttonColorsPrimary(),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.webdav_backup),
+                                color = MiuixTheme.colorScheme.background,
+                            )
+                        }
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = viewModel::restore,
+                        ) {
+                            Text(stringResource(R.string.webdav_restore))
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             }
