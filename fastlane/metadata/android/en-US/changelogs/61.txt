@@ -1,0 +1,6 @@
+v0.6.1
+
+Fixes
+=====
+- Fixed the parsing for OTP strings that had lowercase algorithm names
+- The buttons in the "Add Account" bottom sheet no longer overlap with the system navigation bar

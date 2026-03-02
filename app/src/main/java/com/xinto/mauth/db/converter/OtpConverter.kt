@@ -1,0 +1,29 @@
+package com.xinto.mauth.db.converter
+
+import androidx.room.TypeConverter
+import com.xinto.mauth.core.otp.model.OtpDigest
+import com.xinto.mauth.core.otp.model.OtpType
+
+class OtpConverter {
+
+    @TypeConverter
+    fun fromIntToDigest(value: Int): OtpDigest {
+        return OtpDigest.entries[value]
+    }
+
+    @TypeConverter
+    fun fromDigestToInt(digest: OtpDigest): Int {
+        return digest.ordinal
+    }
+
+    @TypeConverter
+    fun fromIntToType(value: Int): OtpType {
+        return OtpType.entries[value]
+    }
+
+    @TypeConverter
+    fun fromTypeToInt(digest: OtpType): Int {
+        return digest.ordinal
+    }
+
+}

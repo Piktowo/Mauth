@@ -1,0 +1,134 @@
+<resources>
+    <string name="app_name" translatable="false">Mauth</string>
+
+    <string name="auth_title">Enter your PIN</string>
+    <string name="auth_biometrics_title">Biometric Authentication</string>
+    <string name="auth_biometrics_cancel">Cancel</string>
+
+    <string name="home_dashboard_empty">Nothing here yet</string>
+    <string name="home_dashboard_error">Failed to load accounts</string>
+    <string name="home_addaccount_title">Add an account</string>
+    <string name="home_addaccount_subtitle">Scan a QR code or enter the key manually</string>
+    <string name="home_addaccount_data_scanqr">Scan a QR code</string>
+    <string name="home_addaccount_data_imageqr">Choose an image</string>
+    <string name="home_addaccount_data_manual">Enter data manually</string>
+    <string name="home_delete_title">Delete accounts?</string>
+    <string name="home_delete_subtitle">Selected accounts will be permanently deleted.</string>
+    <string name="home_delete_button_delete">Delete</string>
+    <string name="home_delete_button_cancel">Cancel</string>
+    <string name="home_more_settings">Settings</string>
+    <string name="home_code_copy_success">Successfully copied the code to clipboard</string>
+    <string name="home_code_copy_fail">Failed to copy the code</string>
+    <string name="home_image_parse_fail">Failed to parse the QR code</string>
+    <string name="home_sort_label_ascending">Label (A-Z)</string>
+    <string name="home_sort_label_descending">Label (Z-A)</string>
+    <string name="home_sort_issuer_ascending">Issuer (A-Z)</string>
+    <string name="home_sort_issuer_descending">Issuer (Z-A)</string>
+    <string name="home_sort_date_ascending">Oldest first</string>
+    <string name="home_sort_date_descending">Newest first</string>
+
+    <string name="qrscan_title">Scan a QR code</string>
+    <string name="qrscan_permissions_title">Missing permissions</string>
+    <string name="qrscan_permissions_subtitle">Camera permission not granted.</string>
+    <string name="qrscan_permissions_subtitle_rationale">The camera permission is required for this app to scan and analyze the QR code, without it, Mauth cannot scan and import your accounts.</string>
+    <string name="qrscan_permissions_button_grant">Grant</string>
+    <string name="qrscan_permissions_button_cancel">Cancel</string>
+    <string name="qrscan_error">Insufficient permissions</string>
+    <string name="qrscan_error_batch">Scanned QR code does not match previous.</string>
+    <string name="qrscan_error_order">Scan QR codes in the correct order.</string>
+    <string name="qrscan_info_batch">Scanned %1$d out of %2$d</string>
+
+    <string name="account_title_add">Add an account</string>
+    <string name="account_title_edit">Edit an account</string>
+    <string name="account_actions_save">Save</string>
+    <string name="account_data_label">Label</string>
+    <string name="account_data_issuer">Issuer</string>
+    <string name="account_data_secret">Secret</string>
+    <string name="account_data_type">Type</string>
+    <string name="account_data_algorithm">Algorithm</string>
+    <string name="account_data_digits">Digits</string>
+    <string name="account_data_counter">Counter</string>
+    <string name="account_data_period">Period</string>
+    <string name="account_discard_title">Discard changes?</string>
+    <string name="account_discard_subtitle">Your changes will not be saved.</string>
+    <string name="account_discard_buttons_discard">Discard</string>
+    <string name="account_discard_buttons_cancel">Cancel</string>
+    <string name="account_error">An error occurred while loading the account</string>
+    <string name="account_data_status_required">required</string>
+    <string name="account_data_status_range">range %1$s-%2$s</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_category_security">Security</string>
+    <string name="settings_prefs_securemode">Secure mode</string>
+    <string name="settings_prefs_securemode_description">Prevent screenshots within the app</string>
+    <string name="settings_prefs_pincode">PIN Lock</string>
+    <string name="settings_prefs_pincode_description">Require authentication on startup</string>
+    <string name="settings_prefs_biometrics">Biometric Authentication</string>
+    <string name="settings_biometrics_setup_title">Setup Biometrics</string>
+    <string name="settings_biometrics_setup_cancel">Cancel</string>
+    <string name="settings_biometrics_disable_title">Disable Biometrics</string>
+    <string name="settings_biometrics_disable_cancel">Cancel</string>
+    <string name="settings_category_appearance">Appearance</string>
+    <string name="settings_prefs_theme">Theme</string>
+    <string name="settings_category_backup">Backup &amp; Restore</string>
+    <string name="settings_prefs_webdav_backup">Backup &amp; Restore</string>
+    <string name="settings_prefs_webdav_backup_description">Back up accounts to local file or WebDAV server</string>
+
+    <string name="pinsetup_title_create">Set a PIN</string>
+    <string name="pinsetup_title_confirm">Confirm your PIN</string>
+
+    <string name="pinremove_title">Enter your PIN</string>
+
+    <string name="theme_title">Theme</string>
+    <string name="theme_theme_system">System</string>
+    <string name="theme_theme_dark">Dark</string>
+    <string name="theme_theme_light">Light</string>
+    <string name="theme_colors_dynamic">Dynamic</string>
+    <string name="theme_colors_purple">Moth Purple</string>
+    <string name="theme_colors_blue">Blueberry Blue</string>
+    <string name="theme_colors_yellow">Pickle Yellow</string>
+    <string name="theme_colors_green">Toxic Green</string>
+    <string name="theme_colors_orange">Leather Orange</string>
+    <string name="theme_colors_turquoise">Ocean Turquoise</string>
+
+    <string name="export_title">Export</string>
+    <string name="export_state_empty">No accounts to export</string>
+    <string name="export_url_copy_success">Successfully copied the OTP URL to the clipboard</string>
+    <string name="export_batch_hint">Scan this QR code using any Google Authenticator compatible app</string>
+
+    <string name="about_title">About</string>
+    <string name="about_version">Version v%1$s</string>
+    <string name="about_links_source">Source</string>
+    <string name="about_links_feedback">Feedback</string>
+
+    <string name="account_icon_fetch">Fetch icon</string>
+    <string name="account_icon_fetch_success">Icon fetched successfully</string>
+    <string name="account_icon_fetch_fail">Failed to fetch icon. Check the issuer name or your network.</string>
+
+    <string name="backup_title">Backup &amp; Restore</string>
+    <string name="local_backup_header">Local File</string>
+    <string name="local_backup">Export to file</string>
+    <string name="local_restore">Import from file</string>
+    <string name="local_backup_success">Backup file saved successfully</string>
+    <string name="local_backup_fail">File backup failed: %1$s</string>
+    <string name="local_restore_success">Restore successful, imported %1$d accounts</string>
+    <string name="local_restore_fail">File restore failed: %1$s</string>
+    <string name="local_restore_fail_empty">The selected file is empty</string>
+
+    <string name="webdav_header">WebDAV</string>
+    <string name="webdav_title">WebDAV Backup</string>
+    <string name="webdav_url">Server URL</string>
+    <string name="webdav_url_hint">https://dav.jianguoyun.com/dav/</string>
+    <string name="webdav_url_supporting">Jianguoyun: https://dav.jianguoyun.com/dav/ (use app password, not account password)</string>
+    <string name="webdav_username">Username</string>
+    <string name="webdav_password">Password</string>
+    <string name="webdav_backup">Backup now</string>
+    <string name="webdav_restore">Restore now</string>
+    <string name="webdav_test_connection">Test connection</string>
+    <string name="webdav_test_success">Connection successful</string>
+    <string name="webdav_test_fail">Connection failed: %1$s</string>
+    <string name="webdav_backup_success">Backup successful</string>
+    <string name="webdav_backup_fail">Backup failed: %1$s</string>
+    <string name="webdav_restore_success">Restore successful, imported %1$d accounts</string>
+    <string name="webdav_restore_fail">Restore failed: %1$s</string>
+    <string name="webdav_url_required">Server URL is required</string></resources>
