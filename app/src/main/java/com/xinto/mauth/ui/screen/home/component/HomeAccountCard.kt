@@ -16,18 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledIconToggleButton
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +35,12 @@ import com.xinto.mauth.domain.account.model.DomainAccount
 import com.xinto.mauth.domain.otp.model.DomainOtpRealtimeData
 import com.xinto.mauth.ui.component.TwoPaneCard
 import com.xinto.mauth.ui.component.UriImage
+import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun HomeAccountCard(
@@ -66,19 +63,24 @@ fun HomeAccountCard(
                     if (account.icon != null) {
                         UriImage(uri = account.icon!!)
                     } else {
-                        Text(account.shortLabel, style = MaterialTheme.typography.titleLarge)
+                        Text(account.shortLabel, fontSize = MiuixTheme.textStyles.title3.fontSize)
                     }
                 },
                 name = {
                     Text(
                         text = account.label,
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
+                        maxLines = 1,
+                        color = MiuixTheme.colorScheme.onBackground,
                     )
                 },
                 issuer = {
                     if (account.issuer != "") {
-                        Text(account.issuer)
+                        Text(
+                            text = account.issuer,
+                            fontSize = MiuixTheme.textStyles.body2.fontSize,
+                            color = MiuixTheme.colorScheme.onSurfaceSecondary,
+                        )
                     }
                 },
                 trailing = {
@@ -86,24 +88,24 @@ fun HomeAccountCard(
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary)
+                                .background(MiuixTheme.colorScheme.primary)
                                 .padding(4.dp)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_check),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MiuixTheme.colorScheme.onPrimary,
                             )
                         }
                     } else {
                         IconButton(onClick = onEdit) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_edit),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                     }
-                }
+                },
             )
         },
         bottomContent = {
@@ -115,21 +117,17 @@ fun HomeAccountCard(
                 RealtimeInformation(
                     realtimeData = realtimeData,
                     showCode = showCode,
-                    onCounterClick = onCounterClick
+                    onCounterClick = onCounterClick,
                 )
                 InteractionButtons(
                     showCode = showCode,
-                    onShowCodeChange = {
-                        showCode = it
-                    },
-                    onCopyCode = {
-                        onCopyCode(showCode)
-                    }
+                    onShowCodeChange = { showCode = it },
+                    onCopyCode = { onCopyCode(showCode) },
                 )
             }
         },
         onClick = onClick,
-        onLongClick = onLongClick
+        onLongClick = onLongClick,
     )
 }
 
@@ -137,30 +135,41 @@ fun HomeAccountCard(
 private fun InteractionButtons(
     showCode: Boolean,
     onShowCodeChange: (Boolean) -> Unit,
-    onCopyCode: () -> Unit
+    onCopyCode: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        FilledIconToggleButton(
-            checked = showCode, 
-            onCheckedChange = onShowCodeChange
+        Surface(
+            onClick = { onShowCodeChange(!showCode) },
+            color = if (showCode) MiuixTheme.colorScheme.primary
+                    else MiuixTheme.colorScheme.secondaryContainer,
+            shape = CircleShape,
         ) {
-            if (showCode) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_visibility),
-                    contentDescription = null
-                )
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.ic_visibility_off),
-                    contentDescription = null
-                )
+            Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+                if (showCode) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_visibility),
+                        contentDescription = null,
+                        tint = MiuixTheme.colorScheme.onPrimary,
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_visibility_off),
+                        contentDescription = null,
+                    )
+                }
             }
         }
-        FilledTonalIconButton(onClick = onCopyCode) {
-            Icon(
-                painter = painterResource(R.drawable.ic_copy_all),
-                contentDescription = null
-            )
+        Surface(
+            onClick = onCopyCode,
+            color = MiuixTheme.colorScheme.secondaryContainer,
+            shape = CircleShape,
+        ) {
+            Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_copy_all),
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
@@ -169,33 +178,39 @@ private fun InteractionButtons(
 private fun RealtimeInformation(
     realtimeData: DomainOtpRealtimeData,
     showCode: Boolean,
-    onCounterClick: () -> Unit
+    onCounterClick: () -> Unit,
 ) {
     val code = remember(showCode, realtimeData.code) {
         Pair(showCode, realtimeData.code)
     }
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-
         when (realtimeData) {
             is DomainOtpRealtimeData.Hotp -> {
-                FilledTonalIconButton(onClick = onCounterClick) {
-                    Text(realtimeData.count.toString())
+                Surface(
+                    onClick = onCounterClick,
+                    color = MiuixTheme.colorScheme.secondaryContainer,
+                    shape = CircleShape,
+                ) {
+                    Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+                        Text(realtimeData.count.toString())
+                    }
                 }
             }
             is DomainOtpRealtimeData.Totp -> {
                 Box(
                     modifier = Modifier.size(48.dp),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     val progress by animateFloatAsState(
                         targetValue = realtimeData.progress,
-                        animationSpec = tween(500)
+                        animationSpec = tween(500),
                     )
                     CircularProgressIndicator(
-                        progress = { progress },
+                        progress = progress,
+                        size = 48.dp,
                     )
                     Text(realtimeData.countdown.toString())
                 }
@@ -212,13 +227,15 @@ private fun RealtimeInformation(
                             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down) + fadeOut()
                 }
             },
-            label = "Code"
+            label = "Code",
         ) { (show, code) ->
             val showAwareCode = if (show) code else "•".repeat(code.length)
-            Text(showAwareCode, style = MaterialTheme.typography.titleLarge.copy(
-                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                letterSpacing = 2.sp
-            ))
+            Text(
+                text = showAwareCode,
+                fontSize = MiuixTheme.textStyles.title3.fontSize,
+                fontFamily = FontFamily.Monospace,
+                letterSpacing = 2.sp,
+            )
         }
     }
 }
@@ -231,36 +248,27 @@ private fun AccountInfo(
     trailing: @Composable () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.secondaryContainer
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color = MiuixTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                ),
+            contentAlignment = Alignment.Center,
         ) {
-            Box(
-                modifier = Modifier.size(48.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                icon()
-            }
+            icon()
         }
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.labelMedium,
-                LocalContentColor provides LocalContentColor.current.copy(alpha = 0.7f)
-            ) {
-                issuer()
-            }
-            CompositionLocalProvider(
-                LocalTextStyle provides MaterialTheme.typography.titleMedium,
-                content = name,
-            )
+            issuer()
+            name()
         }
         trailing()
     }

@@ -1,42 +1,61 @@
 package com.xinto.mauth.ui.screen.home.component
 
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun HomeDeleteAccountsDialog(
+    show: MutableState<Boolean>,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onCancel,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.ic_delete_forever),
-                contentDescription = null
-            )
+    SuperDialog(
+        show = show,
+        title = stringResource(R.string.home_delete_title),
+        summary = stringResource(R.string.home_delete_subtitle),
+        onDismissRequest = {
+            show.value = false
+            onCancel()
         },
-        title = {
-            Text(stringResource(R.string.home_delete_title))
-        },
-        text = {
-            Text(stringResource(R.string.home_delete_subtitle))
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.home_delete_button_delete))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onCancel) {
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Button(
+                onClick = {
+                    show.value = false
+                    onCancel()
+                },
+                modifier = Modifier.weight(1f),
+            ) {
                 Text(stringResource(R.string.home_delete_button_cancel))
             }
+            Button(
+                onClick = {
+                    show.value = false
+                    onConfirm()
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColorsPrimary(),
+            ) {
+                Text(
+                    text = stringResource(R.string.home_delete_button_delete),
+                    color = MiuixTheme.colorScheme.background,
+                )
+            }
         }
-    )
+    }
 }

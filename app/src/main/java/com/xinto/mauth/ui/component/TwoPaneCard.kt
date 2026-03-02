@@ -1,16 +1,17 @@
 package com.xinto.mauth.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.HorizontalDivider
 
 @Composable
 fun TwoPaneCard(
@@ -22,21 +23,18 @@ fun TwoPaneCard(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ) {
-    val shape by animateRoundedCornerShapeAsState(
-        targetValue = if (selected) MaterialTheme.shapes.small else MaterialTheme.shapes.large,
+    val cornerRadius by animateDpAsState(
+        targetValue = if (selected) 4.dp else 16.dp,
     )
-    ElevatedCard(
-        modifier = modifier,
-        shape = shape,
+    Card(
+        modifier = modifier.combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+        ),
+        cornerRadius = cornerRadius,
+        insideMargin = PaddingValues(12.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                )
-                .padding(12.dp)
-        ) {
+        Column {
             topContent()
             AnimatedVisibility(
                 visible = expanded,

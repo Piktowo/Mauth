@@ -7,35 +7,34 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.xinto.mauth.R
 import com.xinto.mauth.core.settings.model.SortSetting
-import com.xinto.mauth.ui.component.ResponsiveAppBarScaffold
+import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.screen.home.HomeMoreMenu
+import top.yukonga.miuix.kmp.basic.DropdownImpl
+import top.yukonga.miuix.kmp.basic.FloatingActionButton
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.ListPopupColumn
+import top.yukonga.miuix.kmp.basic.PopupPositionProvider
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.extra.SuperListPopup
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScaffold(
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior,
+    scrollBehavior: ScrollBehavior,
     isSelectionActive: Boolean = false,
     activeSortSetting: SortSetting,
     onActiveSortChange: (SortSetting) -> Unit,
@@ -46,92 +45,82 @@ fun HomeScaffold(
     onMenuNavigate: (HomeMoreMenu) -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    ResponsiveAppBarScaffold(
+    val isMoreActionsVisible = remember { mutableStateOf(false) }
+    val isSortVisible = remember { mutableStateOf(false) }
+
+    Scaffold(
         modifier = modifier,
-        appBarTitle = { Text(stringResource(id = R.string.app_name)) },
-        scrollBehavior = scrollBehavior,
-        actions = { arrangement ->
-            AnimatedContent(
-                targetState = isSelectionActive,
-                transitionSpec = {
-                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) + fadeIn() togetherWith
-                            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Up) + fadeOut()
-                },
-                label = "Actions"
-            ) { isSelectionActive ->
-                Row(
-                    horizontalArrangement = arrangement,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (isSelectionActive) {
-                        IconButton(onClick = onDeleteSelected) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_delete_forever),
-                                contentDescription = null
-                            )
-                        }
-                        IconButton(onClick = onExportSelected) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_export),
-                                contentDescription = null
-                            )
-                        }
-                    } else {
-                        var isMoreActionsVisible by remember { mutableStateOf(false) }
-                        IconButton(onClick = {
-                            isMoreActionsVisible = true
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_more_vert),
-                                contentDescription = null
-                            )
-                            DropdownMenu(
-                                expanded = isMoreActionsVisible,
-                                onDismissRequest = {
-                                    isMoreActionsVisible = false
-                                }
-                            ) {
-                                HomeMoreMenu.entries.forEach { menu ->
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(menu.title)) },
-                                        leadingIcon = {
-                                            Icon(
-                                                painter = painterResource(menu.icon),
-                                                contentDescription = null
-                                            )
-                                        },
-                                        onClick = {
-                                            isMoreActionsVisible = false
-                                            onMenuNavigate(menu)
-                                        }
+        topBar = {
+            MauthTopBar(
+                title = stringResource(R.string.app_name),
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    AnimatedContent(
+                        targetState = isSelectionActive,
+                        transitionSpec = {
+                            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) + fadeIn() togetherWith
+                                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Up) + fadeOut()
+                        },
+                        label = "Actions",
+                    ) { selectionActive ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (selectionActive) {
+                                IconButton(onClick = onDeleteSelected) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_delete_forever),
+                                        contentDescription = null,
                                     )
                                 }
-                            }
-                        }
-
-                        var isSortVisible by remember { mutableStateOf(false) }
-                        IconButton(onClick = {
-                            isSortVisible = true
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_sort),
-                                contentDescription = null
-                            )
-                            DropdownMenu(
-                                expanded = isSortVisible,
-                                onDismissRequest = {
-                                    isSortVisible = false
+                                IconButton(onClick = onExportSelected) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_export),
+                                        contentDescription = null,
+                                    )
                                 }
-                            ) {
-                                SortSetting.entries.forEach {
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            isSortVisible = false
-                                            onActiveSortChange(it)
-                                        },
-                                        text = {
-                                            val resource = remember(it) {
-                                                when (it) {
+                            } else {
+                                Box {
+                                    IconButton(onClick = { isMoreActionsVisible.value = true }) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_more_vert),
+                                            contentDescription = null,
+                                        )
+                                    }
+                                    SuperListPopup(
+                                        show = isMoreActionsVisible,
+                                        alignment = PopupPositionProvider.Align.End,
+                                        onDismissRequest = { isMoreActionsVisible.value = false },
+                                    ) {
+                                        ListPopupColumn {
+                                            HomeMoreMenu.entries.forEachIndexed { index, menu ->
+                                                DropdownImpl(
+                                                    text = stringResource(menu.title),
+                                                    optionSize = HomeMoreMenu.entries.size,
+                                                    isSelected = false,
+                                                    onSelectedIndexChange = {
+                                                        isMoreActionsVisible.value = false
+                                                        onMenuNavigate(HomeMoreMenu.entries[it])
+                                                    },
+                                                    index = index,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                Box {
+                                    IconButton(onClick = { isSortVisible.value = true }) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.ic_sort),
+                                            contentDescription = null,
+                                        )
+                                    }
+                                    SuperListPopup(
+                                        show = isSortVisible,
+                                        alignment = PopupPositionProvider.Align.End,
+                                        onDismissRequest = { isSortVisible.value = false },
+                                    ) {
+                                        ListPopupColumn {
+                                            SortSetting.entries.forEachIndexed { index, sort ->
+                                                val resource = when (sort) {
                                                     SortSetting.DateAsc -> R.string.home_sort_date_ascending
                                                     SortSetting.DateDesc -> R.string.home_sort_date_descending
                                                     SortSetting.LabelAsc -> R.string.home_sort_label_ascending
@@ -139,52 +128,51 @@ fun HomeScaffold(
                                                     SortSetting.IssuerAsc -> R.string.home_sort_issuer_ascending
                                                     SortSetting.IssuerDesc -> R.string.home_sort_issuer_descending
                                                 }
-                                            }
-                                            Text(stringResource(resource))
-                                        },
-                                        trailingIcon = {
-                                            if (activeSortSetting == it) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.ic_check),
-                                                    contentDescription = null
+                                                DropdownImpl(
+                                                    text = stringResource(resource),
+                                                    optionSize = SortSetting.entries.size,
+                                                    isSelected = activeSortSetting == sort,
+                                                    onSelectedIndexChange = {
+                                                        isSortVisible.value = false
+                                                        onActiveSortChange(SortSetting.entries[it])
+                                                    },
+                                                    index = index,
                                                 )
                                             }
                                         }
-                                    )
+                                    }
                                 }
                             }
                         }
-
                     }
-                }
-            }
+                },
+            )
         },
         floatingActionButton = {
             AnimatedContent(
                 targetState = isSelectionActive,
                 transitionSpec = {
-                    scaleIn() + fadeIn() togetherWith
-                            scaleOut() + fadeOut()
+                    scaleIn() + fadeIn() togetherWith scaleOut() + fadeOut()
                 },
-                label = "FAB"
-            ) { isSelectionActive ->
-                if (isSelectionActive) {
+                label = "FAB",
+            ) { selectionActive ->
+                if (selectionActive) {
                     FloatingActionButton(onClick = onCancelSelection) {
                         Icon(
                             painter = painterResource(R.drawable.ic_undo),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 } else {
                     FloatingActionButton(onClick = onAdd) {
                         Icon(
                             painter = painterResource(R.drawable.ic_add),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
             }
         },
-        content = content
+        content = content,
     )
 }

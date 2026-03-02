@@ -5,18 +5,16 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import com.xinto.mauth.core.settings.model.SortSetting
 import com.xinto.mauth.domain.account.model.DomainAccountInfo
 import com.xinto.mauth.domain.otp.model.DomainOtpRealtimeData
@@ -92,7 +90,6 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onAddAccountNavigate: (HomeAddAccountMenu) -> Unit,
@@ -110,17 +107,17 @@ fun HomeScreen(
     activeSortSetting: SortSetting,
     onActiveSortChange: (SortSetting) -> Unit
 ) {
-    var showAddSheet by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val showAddSheet = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
+    val scrollBehavior = MiuixScrollBehavior()
     HomeScaffold(
         isSelectionActive = selectedAccounts.isNotEmpty(),
         onAdd = {
-            showAddSheet = true
+            showAddSheet.value = true
         },
         onCancelSelection = onCancelAccountSelection,
         onDeleteSelected = {
-            showDeleteDialog = true
+            showDeleteDialog.value = true
         },
         onExportSelected = onExportSelectedAccounts,
         onMenuNavigate = onMoreMenuNavigate,
@@ -158,26 +155,21 @@ fun HomeScreen(
             }
         }
     }
-    if (showAddSheet) {
-        HomeAddAccountSheet(
-            onDismiss = {
-                showAddSheet = false
-            },
-            onAddAccountNavigate = {
-                showAddSheet = false
-                onAddAccountNavigate(it)
-            }
-        )
-    }
-    if (showDeleteDialog) {
-        HomeDeleteAccountsDialog(
-            onConfirm = {
-                showDeleteDialog = false
-                onDeleteSelectedAccounts()
-            },
-            onCancel = {
-                showDeleteDialog = false
-            }
-        )
-    }
+    HomeAddAccountSheet(
+        show = showAddSheet,
+        onAddAccountNavigate = {
+            showAddSheet.value = false
+            onAddAccountNavigate(it)
+        }
+    )
+    HomeDeleteAccountsDialog(
+        show = showDeleteDialog,
+        onConfirm = {
+            showDeleteDialog.value = false
+            onDeleteSelectedAccounts()
+        },
+        onCancel = {
+            showDeleteDialog.value = false
+        }
+    )
 }

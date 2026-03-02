@@ -3,10 +3,9 @@ package com.xinto.mauth.ui.screen.home.state
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Text
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,8 +26,9 @@ fun HomeScreenEmpty(modifier: Modifier = Modifier) {
             painter = painterResource(R.drawable.ic_empty_dashboard),
             contentDescription = null
         )
-        ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
-            Text(stringResource(R.string.home_dashboard_empty))
-        }
+        Text(
+            text = stringResource(R.string.home_dashboard_empty),
+            fontSize = MiuixTheme.textStyles.title3.fontSize,
+        )
     }
 }
