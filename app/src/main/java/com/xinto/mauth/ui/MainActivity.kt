@@ -1,8 +1,10 @@
 package com.xinto.mauth.ui
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +25,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventDispatcherOwner
+import androidx.navigationevent.NavigationEventInput
+import androidx.navigationevent.OnBackInvokedDefaultInput
+import androidx.navigationevent.setViewTreeNavigationEventDispatcherOwner
 import com.xinto.mauth.core.otp.parser.OtpUriParserResult
 import com.xinto.mauth.core.settings.model.ThemeSetting
 import com.xinto.mauth.domain.AuthRepository
@@ -56,7 +63,9 @@ import dev.olshevski.navigation.reimagined.replaceLast
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), NavigationEventDispatcherOwner {
+
+    override val navigationEventDispatcher = NavigationEventDispatcher()
 
     private val settings: SettingsRepository by inject()
     private val otp: OtpRepository by inject()
@@ -66,6 +75,32 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // 为 Miuix 弹窗组件（SuperDialog/SuperBottomSheet 等）提供 NavigationEventDispatcher
+        // 让 LocalNavigationEventDispatcherOwner 能在 ViewTree 中找到它
+        window.decorView.setViewTreeNavigationEventDispatcherOwner(this)
+        if (Build.VERSION.SDK_INT >= 33) {
+            // API 33+：通过 OnBackInvokedDispatcher 接收系统返回事件
+            navigationEventDispatcher.addInput(OnBackInvokedDefaultInput(onBackInvokedDispatcher))
+        } else {
+            // API 23-32：通过 OnBackPressedDispatcher 接收系统返回事件
+            navigationEventDispatcher.addInput(object : NavigationEventInput() {
+                private val callback = object : OnBackPressedCallback(false) {
+                    override fun handleOnBackPressed() {
+                        dispatchOnBackCompleted()
+                    }
+                }
+                override fun onAdded(dispatcher: NavigationEventDispatcher) {
+                    onBackPressedDispatcher.addCallback(this@MainActivity, callback)
+                }
+                override fun onHasEnabledHandlersChanged(hasEnabledHandlers: Boolean) {
+                    callback.isEnabled = hasEnabledHandlers
+                }
+                override fun onRemoved() {
+                    callback.remove()
+                }
+            })
+        }
 
         settings.getTheme()
             .launchInLifecycle(lifecycle) {
@@ -280,5 +315,10 @@ class MainActivity : FragmentActivity() {
         } else {
             navigate(destination)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navigationEventDispatcher.dispose()
     }
 }

@@ -196,6 +196,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     implementation("top.yukonga.miuix.kmp:miuix:0.8.5")
+    implementation("androidx.navigationevent:navigationevent-android:1.0.2")
 
     implementation("io.insert-koin:koin-androidx-compose:3.4.5")
 
