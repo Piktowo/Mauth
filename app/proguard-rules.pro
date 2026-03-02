@@ -25,4 +25,23 @@
 -dontwarn com.google.errorprone.annotations.CheckReturnValue
 -dontwarn com.google.errorprone.annotations.RestrictedApi
 
+# Protobuf Lite
 -keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+
+# OkHttp — strip unused platform adapters
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+
+# ZXing — only core QR decoder is needed
+-keep class com.google.zxing.qrcode.QRCodeReader { *; }
+-keep class com.google.zxing.qrcode.QRCodeWriter { *; }
+-keep class com.google.zxing.common.** { *; }
+
+# Room — keep generated DAOs
+-keep class * extends androidx.room.RoomDatabase { *; }
+
+# SQLCipher
+-keep class net.sqlcipher.** { *; }
+-dontwarn net.sqlcipher.**
