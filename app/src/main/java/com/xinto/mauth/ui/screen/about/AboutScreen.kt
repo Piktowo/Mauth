@@ -1,38 +1,36 @@
-package com.xinto.mauth.ui.screen.about
+﻿package com.xinto.mauth.ui.screen.about
 
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xinto.mauth.BuildConfig
 import com.xinto.mauth.R
+import com.xinto.mauth.ui.component.MauthCard
+import com.xinto.mauth.ui.component.MauthScreenColumn
+import com.xinto.mauth.ui.component.MauthSmallTitle
+import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.component.rememberUriHandler
-import com.xinto.mauth.ui.screen.about.component.LinkedButton
-import com.xinto.mauth.ui.screen.about.component.LinkedButtonsRow
-import com.xinto.mauth.ui.theme.MauthTheme
+import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
     modifier: Modifier = Modifier,
@@ -40,78 +38,69 @@ fun AboutScreen(
 ) {
     val uriHandler = rememberUriHandler()
     BackHandler(onBack = onBack)
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = MiuixScrollBehavior()
+
     Scaffold(
         modifier = modifier,
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.about_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+            MauthTopBar(
+                title = stringResource(R.string.about_title),
+                scrollBehavior = scrollBehavior,
+                onBack = onBack,
             )
         }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.tertiaryContainer
-            ) {
-                Icon(
-                    modifier = Modifier.padding(0.dp),
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                )
-            }
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
-                style = MaterialTheme.typography.bodyLarge,
-                color = LocalContentColor.current.copy(alpha = 0.7f)
-            )
-            LinkedButtonsRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                AboutLink.defaultLinks.forEach {
-                    LinkedButton(
-                        onClick = { uriHandler.openUrl(it.url) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(it.icon),
-                                contentDescription = null
-                            )
-                        },
-                        title = { Text(stringResource(it.title)) }
+    ) { innerPadding ->
+        MauthScreenColumn(scrollBehavior = scrollBehavior, innerPadding = innerPadding) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(96.dp)
+                            .clip(RoundedCornerShape(24.dp)),
+                        tint = Color.Unspecified,
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        style = MiuixTheme.textStyles.title1,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+                        style = MiuixTheme.textStyles.body1,
+                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                MauthCard {
+                    BasicComponent(
+                        title = stringResource(R.string.app_name),
+                        summary = stringResource(R.string.about_app_description),
+                    )
+                }
+
+                MauthSmallTitle(
+                    text = stringResource(R.string.about_section_links),
+                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                )
+                MauthCard {
+                    AboutLink.defaultLinks.forEach { link ->
+                        SuperArrow(
+                            title = stringResource(link.title),
+                            summary = link.url,
+                            onClick = { uriHandler.openUrl(link.url) },
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
-@Composable
-fun AboutScreenPreview() {
-    MauthTheme {
-        AboutScreen(onBack = {})
     }
 }

@@ -16,8 +16,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,7 +24,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xinto.mauth.core.otp.parser.OtpUriParserResult
-import com.xinto.mauth.core.settings.model.ColorSetting
 import com.xinto.mauth.core.settings.model.ThemeSetting
 import com.xinto.mauth.domain.AuthRepository
 import com.xinto.mauth.domain.SettingsRepository
@@ -103,16 +100,12 @@ class MainActivity : FragmentActivity() {
 
         setContent {
             val theme by settings.getTheme().collectAsStateWithLifecycle(initialValue = ThemeSetting.DEFAULT)
-            val color by settings.getColor().collectAsStateWithLifecycle(initialValue = ColorSetting.DEFAULT)
+            val themeSeedColor by settings.getThemeSeedColor().collectAsStateWithLifecycle(initialValue = 0xFFFFFFFFL)
             MauthTheme(
                 theme = theme,
-                color = color
+                themeSeedColor = themeSeedColor
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.surface
-                ) {
-                    val navigator = rememberNavController(initialScreen)
+                val navigator = rememberNavController(initialScreen)
 
                     LaunchedEffect(intent.data) {
                         val accountInfo = when (val parseResult = otp.parseUri(intent.data.toString())) {
@@ -276,7 +269,6 @@ class MainActivity : FragmentActivity() {
                             }
                         }
                     }
-                }
             }
         }
     }

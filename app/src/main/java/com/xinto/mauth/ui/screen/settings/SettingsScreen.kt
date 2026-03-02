@@ -1,32 +1,25 @@
 package com.xinto.mauth.ui.screen.settings
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xinto.mauth.R
-import com.xinto.mauth.ui.component.lazygroup.itemGrouped
+import com.xinto.mauth.ui.component.MauthCard
+import com.xinto.mauth.ui.component.MauthScreenColumn
+import com.xinto.mauth.ui.component.MauthSmallTitle
+import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.component.rememberBiometricHandler
 import com.xinto.mauth.ui.component.rememberBiometricPromptData
-import com.xinto.mauth.ui.screen.settings.component.SettingsNavigateItem
-import com.xinto.mauth.ui.screen.settings.component.SettingsSwitchItem
 import org.koin.androidx.compose.koinViewModel
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.extra.SuperSwitch
 
 @Composable
 fun SettingsScreen(
@@ -54,120 +47,76 @@ fun SettingsScreen(
     )
 
     BackHandler(onBack = onBack)
-    SettingsScreen(
-        onBack = onBack,
-        secureMode = secureMode,
-        onSecureModeChange = viewModel::updateSecureMode,
-        pinCode = pinLock,
-        onPinCodeChange = {
-            if (it) {
-                onSetupPinCode()
-            } else {
-                onDisablePinCode()
-            }
-        },
-        showBiometrics = biometricHandler.canUseBiometrics(),
-        biometrics = biometrics,
-        onBiometricsChange = {
-            val promptData = if (it) setupPromptData else disablePromptData
-            biometricHandler.requestBiometrics(promptData)
-        },
-        onThemeNavigate = onThemeNavigate,
-        onWebDavBackupNavigate = onWebDavBackupNavigate,
-    )
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SettingsScreen(
-    onBack: () -> Unit,
-    secureMode: Boolean,
-    onSecureModeChange: (Boolean) -> Unit,
-    pinCode: Boolean,
-    onPinCodeChange: (Boolean) -> Unit,
-    showBiometrics: Boolean,
-    biometrics: Boolean,
-    onBiometricsChange: (Boolean) -> Unit,
-    onThemeNavigate: () -> Unit,
-    onWebDavBackupNavigate: () -> Unit,
-) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = MiuixScrollBehavior()
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(stringResource(R.string.settings_title))
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+            MauthTopBar(
+                title = stringResource(R.string.settings_title),
+                scrollBehavior = scrollBehavior,
+                onBack = onBack,
             )
         }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = PaddingValues(16.dp),
+    ) { innerPadding ->
+        MauthScreenColumn(
+            scrollBehavior = scrollBehavior,
+            innerPadding = innerPadding,
         ) {
-            itemGrouped(header = { Text(stringResource(R.string.settings_category_security)) }) {
-                SettingsSwitchItem(
-                    onCheckedChange = onSecureModeChange,
-                    checked = secureMode,
-                    title = {
-                        Text(stringResource(R.string.settings_prefs_securemode))
-                    },
-                    description = {
-                        Text(stringResource(R.string.settings_prefs_securemode_description))
-                    }
+            item {
+                MauthSmallTitle(
+                    text = stringResource(R.string.settings_category_security),
+                    modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 4.dp),
                 )
-                SettingsSwitchItem(
-                    onCheckedChange = onPinCodeChange,
-                    checked = pinCode,
-                    title = {
-                        Text(stringResource(R.string.settings_prefs_pincode))
-                    },
-                    description = {
-                        Text(stringResource(R.string.settings_prefs_pincode_description))
-                    }
-                )
-                if (showBiometrics) {
-                    SettingsSwitchItem(
-                        onCheckedChange = onBiometricsChange,
-                        checked = biometrics,
-                        title = {
-                            Text(stringResource(R.string.settings_prefs_biometrics))
+                MauthCard {
+                    SuperSwitch(
+                        title = stringResource(R.string.settings_prefs_securemode),
+                        summary = stringResource(R.string.settings_prefs_securemode_description),
+                        checked = secureMode,
+                        onCheckedChange = viewModel::updateSecureMode,
+                    )
+                    SuperSwitch(
+                        title = stringResource(R.string.settings_prefs_pincode),
+                        summary = stringResource(R.string.settings_prefs_pincode_description),
+                        checked = pinLock,
+                        onCheckedChange = { checked ->
+                            if (checked) onSetupPinCode() else onDisablePinCode()
                         },
-                        enabled = pinCode
+                    )
+                    if (biometricHandler.canUseBiometrics()) {
+                        SuperSwitch(
+                            title = stringResource(R.string.settings_prefs_biometrics),
+                            checked = biometrics,
+                            onCheckedChange = { checked ->
+                                val promptData = if (checked) setupPromptData else disablePromptData
+                                biometricHandler.requestBiometrics(promptData)
+                            },
+                            enabled = pinLock,
+                        )
+                    }
+                }
+
+                MauthSmallTitle(
+                    text = stringResource(R.string.settings_category_appearance),
+                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                )
+                MauthCard {
+                    SuperArrow(
+                        title = stringResource(R.string.settings_prefs_theme),
+                        onClick = onThemeNavigate,
                     )
                 }
-            }
-            itemGrouped(header = { Text(stringResource(R.string.settings_category_appearance)) }) {
-                SettingsNavigateItem(
-                    onClick = onThemeNavigate,
-                    title = {
-                        Text(stringResource(R.string.settings_prefs_theme))
-                    },
+
+                MauthSmallTitle(
+                    text = stringResource(R.string.settings_category_backup),
+                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
                 )
-            }
-            itemGrouped(header = { Text(stringResource(R.string.settings_category_backup)) }) {
-                SettingsNavigateItem(
-                    onClick = onWebDavBackupNavigate,
-                    title = {
-                        Text(stringResource(R.string.settings_prefs_webdav_backup))
-                    },
-                    description = {
-                        Text(stringResource(R.string.settings_prefs_webdav_backup_description))
-                    }
-                )
+                MauthCard {
+                    SuperArrow(
+                        title = stringResource(R.string.settings_prefs_webdav_backup),
+                        summary = stringResource(R.string.settings_prefs_webdav_backup_description),
+                        onClick = onWebDavBackupNavigate,
+                    )
+                }
             }
         }
     }

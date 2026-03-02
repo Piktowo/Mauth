@@ -11,6 +11,7 @@ interface Settings {
     fun getSortMode(): Flow<SortSetting>
     fun getTheme(): Flow<ThemeSetting>
     fun getColor(): Flow<ColorSetting>
+    fun getThemeSeedColor(): Flow<Long>
     fun getWebDavUrl(): Flow<String>
     fun getWebDavUsername(): Flow<String>
     fun getWebDavPassword(): Flow<String>
@@ -20,6 +21,7 @@ interface Settings {
     suspend fun setSortMode(value: SortSetting)
     suspend fun setTheme(value: ThemeSetting)
     suspend fun setColor(value: ColorSetting)
+    suspend fun setThemeSeedColor(value: Long)
     suspend fun setWebDavUrl(value: String)
     suspend fun setWebDavUsername(value: String)
     suspend fun setWebDavPassword(value: String)

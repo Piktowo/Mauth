@@ -83,13 +83,15 @@
     <string name="theme_theme_system">System</string>
     <string name="theme_theme_dark">Dark</string>
     <string name="theme_theme_light">Light</string>
-    <string name="theme_colors_dynamic">Dynamic</string>
-    <string name="theme_colors_purple">Moth Purple</string>
-    <string name="theme_colors_blue">Blueberry Blue</string>
-    <string name="theme_colors_yellow">Pickle Yellow</string>
-    <string name="theme_colors_green">Toxic Green</string>
-    <string name="theme_colors_orange">Leather Orange</string>
-    <string name="theme_colors_turquoise">Ocean Turquoise</string>
+    <string name="theme_category_mode">Display Mode</string>
+    <string name="theme_category_color">Color</string>
+    <string name="theme_prefs_mode">Theme</string>
+    <string name="theme_prefs_color">Accent Color</string>
+    <string name="theme_color_default">Default (Monochrome)</string>
+    <string name="theme_color_picker_title">Choose Accent Color</string>
+    <string name="theme_color_hex_label">Hex Color Code</string>
+    <string name="theme_color_reset">Reset to Default</string>
+    <string name="theme_color_apply">Apply</string>
 
     <string name="export_title">Export</string>
     <string name="export_state_empty">No accounts to export</string>
@@ -100,6 +102,8 @@
     <string name="about_version">Version v%1$s</string>
     <string name="about_links_source">Source</string>
     <string name="about_links_feedback">Feedback</string>
+    <string name="about_app_description">A free and open-source two-factor authentication app.</string>
+    <string name="about_section_links">Links</string>
 
     <string name="account_icon_fetch">Fetch icon</string>
     <string name="account_icon_fetch_success">Icon fetched successfully</string>

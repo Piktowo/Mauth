@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -68,6 +69,10 @@ class DefaultSettings(context: Context) : Settings {
         }
     }
 
+    override fun getThemeSeedColor(): Flow<Long> {
+        return preferences.data.map { it[KEY_THEME_SEED_COLOR] ?: 0xFFFFFFFFL }
+    }
+
     override fun getWebDavUrl(): Flow<String> = encryptedPrefFlow(KEY_WEBDAV_URL)
 
     override fun getWebDavUsername(): Flow<String> = encryptedPrefFlow(KEY_WEBDAV_USERNAME)
@@ -104,6 +109,10 @@ class DefaultSettings(context: Context) : Settings {
         }
     }
 
+    override suspend fun setThemeSeedColor(value: Long) {
+        preferences.edit { it[KEY_THEME_SEED_COLOR] = value }
+    }
+
     override suspend fun setWebDavUrl(value: String) {
         encryptedPrefs.edit { putString(KEY_WEBDAV_URL, value) }
     }
@@ -133,6 +142,7 @@ class DefaultSettings(context: Context) : Settings {
         val KEY_SORT_MODE = stringPreferencesKey("sort_mode")
         val KEY_THEME = stringPreferencesKey("theme")
         val KEY_COLOR = stringPreferencesKey("color")
+        val KEY_THEME_SEED_COLOR = longPreferencesKey("theme_seed_color")
         const val KEY_WEBDAV_URL = "webdav_url"
         const val KEY_WEBDAV_USERNAME = "webdav_username"
         const val KEY_WEBDAV_PASSWORD = "webdav_password"

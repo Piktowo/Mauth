@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.xinto.mauth"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 35
         versionCode = 10000
         versionName = "1.0.0"
@@ -194,6 +194,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    implementation("top.yukonga.miuix.kmp:miuix:0.8.5")
 
     implementation("io.insert-koin:koin-androidx-compose:3.4.5")
 
