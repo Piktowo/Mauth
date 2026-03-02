@@ -25,10 +25,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.navigationevent.NavigationEventDispatcherOwner
 import androidx.navigationevent.NavigationEventInput
 import androidx.navigationevent.OnBackInvokedDefaultInput
+import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
 import androidx.navigationevent.setViewTreeNavigationEventDispatcherOwner
 import com.xinto.mauth.core.otp.parser.OtpUriParserResult
 import com.xinto.mauth.core.settings.model.ThemeSetting
@@ -136,6 +138,10 @@ class MainActivity : FragmentActivity(), NavigationEventDispatcherOwner {
         setContent {
             val theme by settings.getTheme().collectAsStateWithLifecycle(initialValue = ThemeSetting.DEFAULT)
             val themeSeedColor by settings.getThemeSeedColor().collectAsStateWithLifecycle(initialValue = 0xFFFFFFFFL)
+            // 通过 CompositionLocalProvider 将 NavigationEventDispatcherOwner 注入 Compose 树
+            // 这样即使在 Compose Popup（独立 Android 窗口）内部，也能获取到 Owner，
+            // 避免 WindowDropdown/WindowBottomSheet 的 NavigationBackHandler 崩溃
+            CompositionLocalProvider(LocalNavigationEventDispatcherOwner provides this) {
             MauthTheme(
                 theme = theme,
                 themeSeedColor = themeSeedColor
@@ -305,6 +311,7 @@ class MainActivity : FragmentActivity(), NavigationEventDispatcherOwner {
                         }
                     }
             }
+            } // CompositionLocalProvider(LocalNavigationEventDispatcherOwner)
         }
     }
 

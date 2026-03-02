@@ -102,6 +102,7 @@ fun SettingsScreen(
                 MauthCard {
                     SuperArrow(
                         title = stringResource(R.string.settings_prefs_theme),
+                        summary = stringResource(R.string.settings_prefs_theme_description),
                         onClick = onThemeNavigate,
                     )
                 }

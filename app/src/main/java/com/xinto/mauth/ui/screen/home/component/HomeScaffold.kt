@@ -154,6 +154,7 @@ fun HomeScaffold(
                     Icon(
                         painter = painterResource(R.drawable.ic_add),
                         contentDescription = null,
+                        tint = MiuixTheme.colorScheme.onPrimary,
                     )
                 }
             }

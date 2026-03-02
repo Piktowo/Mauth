@@ -78,6 +78,7 @@
     <string name="settings_biometrics_disable_cancel">取消</string>
     <string name="settings_category_appearance">外观</string>
     <string name="settings_prefs_theme">主题</string>
+    <string name="settings_prefs_theme_description">自定义主题色与深色模式</string>
     <string name="settings_category_backup">备份与恢复</string>
     <string name="settings_prefs_webdav_backup">备份与恢复</string>
     <string name="settings_prefs_webdav_backup_description">将账户备份到本地文件或 WebDAV 服务器（支持坚果云等）</string>
