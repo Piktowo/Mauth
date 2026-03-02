@@ -16,12 +16,12 @@ data class AboutLink(
             AboutLink(
                 icon = R.drawable.ic_github,
                 title = R.string.about_links_source,
-                url = "https://github.com/X1nto/Mauth"
+                url = "https://github.com/Piktowo/Mauth"
             ),
             AboutLink(
                 icon = R.drawable.ic_bug,
                 title = R.string.about_links_feedback,
-                url = "https://github.com/X1nto/Mauth/issues"
+                url = "https://github.com/Piktowo/Mauth/issues"
             ),
         )
     }

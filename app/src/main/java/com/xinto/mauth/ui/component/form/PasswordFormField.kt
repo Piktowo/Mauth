@@ -2,10 +2,9 @@ package com.xinto.mauth.ui.component.form
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextField
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 class PasswordFormField(
     initial: String,
@@ -34,43 +39,44 @@ class PasswordFormField(
     override fun invoke(modifier: Modifier) {
         var showPassword by rememberSaveable { mutableStateOf(false) }
         val visualTransformation = remember(showPassword) {
-            if (showPassword) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
+            if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+        }
+        Column(modifier = modifier) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = value,
+                onValueChange = { value = it },
+                label = stringResource(label),
+                leadingIcon = if (icon == 0) null else {
+                    {
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null
+                        )
+                    }
+                },
+                trailingIcon = {
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        Icon(
+                            painter = painterResource(
+                                if (showPassword) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+                            ),
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = visualTransformation,
+                maxLines = 1,
+            )
+            if (required) {
+                Text(
+                    text = stringResource(R.string.account_data_status_required),
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp),
+                    style = MiuixTheme.textStyles.footnote1,
+                    color = if (error) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                )
             }
         }
-        OutlinedTextField(
-            modifier = modifier,
-            value = value,
-            onValueChange = {
-                value = it
-            },
-            label = {
-                Text(stringResource(label))
-            },
-            leadingIcon = if (icon == 0) null else { ->
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null
-                )
-            },
-            trailingIcon = {
-                IconButton(onClick = { showPassword = !showPassword }) {
-                    val visible = painterResource(R.drawable.ic_visibility)
-                    val notVisible = painterResource(R.drawable.ic_visibility_off)
-                    Icon(
-                        painter = if (showPassword) visible else notVisible,
-                        contentDescription = null
-                    )
-                }
-            },
-            supportingText = if (!required) null else { ->
-                Text(stringResource(R.string.account_data_status_required))
-            },
-            visualTransformation = visualTransformation,
-            isError = error
-        )
     }
 
     override fun isValid(): Boolean {

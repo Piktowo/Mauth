@@ -10,15 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.xinto.mauth.ui.component.form.form
 import com.xinto.mauth.ui.screen.account.AccountForm
+import top.yukonga.miuix.kmp.utils.overScrollVertical
 
 @Composable
 fun AccountScreenSuccess(form: AccountForm) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .overScrollVertical(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(16.dp),
-        columns = GridCells.Fixed(2)
+        columns = GridCells.Fixed(1),
+        overscrollEffect = null,
     ) {
         form(form)
     }

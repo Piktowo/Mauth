@@ -11,14 +11,10 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -31,6 +27,9 @@ import androidx.core.net.toUri
 import com.xinto.mauth.R
 import com.xinto.mauth.ui.component.UriImage
 import com.xinto.mauth.ui.component.form.FormField
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,12 +59,8 @@ class IconFormField(
         ) {
             Surface(
                 modifier = Modifier.size(96.dp),
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = MiuixTheme.colorScheme.secondaryContainer,
                 shape = CircleShape,
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline
-                ),
                 onClick = {
                     imageSelectLauncher.launch(
                         PickVisualMediaRequest(
@@ -96,7 +91,7 @@ class IconFormField(
                     Surface(
                         modifier = Modifier.size(32.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = MiuixTheme.colorScheme.primaryContainer,
                         shadowElevation = 4.dp,
                         onClick = {
                             val issuer = issuerProvider().trim()
@@ -117,7 +112,7 @@ class IconFormField(
                                 modifier = Modifier.size(18.dp),
                                 painter = painterResource(R.drawable.ic_search),
                                 contentDescription = context.getString(R.string.account_icon_fetch),
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                tint = MiuixTheme.colorScheme.onPrimaryContainer
                             )
                         }
                     }

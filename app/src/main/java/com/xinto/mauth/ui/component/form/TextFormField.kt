@@ -2,14 +2,19 @@ package com.xinto.mauth.ui.component.form
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextField
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 class TextFormField(
     initial: String,
@@ -24,26 +29,31 @@ class TextFormField(
 
     @Composable
     override fun invoke(modifier: Modifier) {
-        OutlinedTextField(
-            modifier = modifier,
-            value = value,
-            onValueChange = {
-                value = it
-            },
-            label = {
-                Text(stringResource(label))
-            },
-            leadingIcon = if (icon == 0) null else { ->
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null
+        Column(modifier = modifier) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = value,
+                onValueChange = { value = it },
+                label = stringResource(label),
+                leadingIcon = if (icon == 0) null else {
+                    {
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null
+                        )
+                    }
+                },
+                maxLines = 1,
+            )
+            if (required) {
+                Text(
+                    text = stringResource(R.string.account_data_status_required),
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp),
+                    style = MiuixTheme.textStyles.footnote1,
+                    color = if (error) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 )
-            },
-            supportingText = if (!required) null else { ->
-                Text(stringResource(R.string.account_data_status_required))
-            },
-            isError = error
-        )
+            }
+        }
     }
 
     override fun isValid(): Boolean {

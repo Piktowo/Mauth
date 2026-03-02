@@ -4,22 +4,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +21,12 @@ import com.xinto.mauth.ui.screen.account.state.AccountScreenLoading
 import com.xinto.mauth.ui.screen.account.state.AccountScreenSuccess
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.TextButton
+import top.yukonga.miuix.kmp.basic.TopAppBar
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import java.util.UUID
 
 @Composable
@@ -79,7 +75,6 @@ fun EditAccountScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(
     title: String,
@@ -87,49 +82,39 @@ fun AccountScreen(
     onSave: () -> Unit,
     onExit: () -> Unit,
 ) {
-    var isExitDialogShown by remember { mutableStateOf(false) }
+    val showExitDialog = remember { mutableStateOf(false) }
     val hasChanges by remember(state) {
         derivedStateOf {
             state is AccountScreenState.Success && !state.form.isSame()
         }
     }
     BackHandler {
-        if (hasChanges) {
-            isExitDialogShown = true
-        } else {
-            onExit()
-        }
+        if (hasChanges) showExitDialog.value = true else onExit()
     }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         topBar = {
             TopAppBar(
-                actions = {
-                    TextButton(
-                        onClick = onSave,
-                        enabled = state is AccountScreenState.Success
-                    ) {
-                        Text(stringResource(R.string.account_actions_save))
-                    }
-                },
+                title = title,
+                color = MiuixTheme.colorScheme.surface,
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (hasChanges) {
-                            isExitDialogShown = true
-                        } else {
-                            onExit()
-                        }
+                        if (hasChanges) showExitDialog.value = true else onExit()
                     }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MiuixTheme.colorScheme.onBackground,
                         )
                     }
                 },
-                title = {
-                    Text(title)
+                actions = {
+                    TextButton(
+                        text = stringResource(R.string.account_actions_save),
+                        onClick = onSave,
+                        enabled = state is AccountScreenState.Success,
+                    )
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = null,
             )
         }
     ) { paddingValues ->
@@ -137,30 +122,16 @@ fun AccountScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             when (state) {
-                is AccountScreenState.Loading -> {
-                    AccountScreenLoading()
-                }
-                is AccountScreenState.Success -> {
-                    AccountScreenSuccess(form = state.form)
-                }
-                is AccountScreenState.Error -> {
-                    AccountScreenError()
-                }
+                is AccountScreenState.Loading -> AccountScreenLoading()
+                is AccountScreenState.Success -> AccountScreenSuccess(form = state.form)
+                is AccountScreenState.Error -> AccountScreenError()
             }
         }
     }
-    if (isExitDialogShown) {
-        AccountExitDialog(
-            onCancel = {
-                isExitDialogShown = false
-            },
-            onConfirm = {
-                isExitDialogShown = false
-                onExit()
-            }
-        )
-    }
+    AccountExitDialog(
+        show = showExitDialog,
+        onConfirm = { onExit() },
+    )
 }

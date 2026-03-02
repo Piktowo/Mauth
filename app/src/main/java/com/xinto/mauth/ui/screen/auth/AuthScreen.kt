@@ -1,11 +1,6 @@
 package com.xinto.mauth.ui.screen.auth
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +17,11 @@ import com.xinto.mauth.ui.component.pinboard.rememberPinBoardState
 import com.xinto.mauth.ui.component.rememberBiometricHandler
 import com.xinto.mauth.ui.component.rememberBiometricPromptData
 import org.koin.androidx.compose.getViewModel
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TopAppBar
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun AuthScreen(
@@ -77,7 +77,6 @@ fun AuthScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
     code: String,
@@ -105,18 +104,18 @@ fun AuthScreen(
         },
         topBar = {
             if (onBackPress != null) {
-                LargeTopAppBar(
-                    title = {
-                        Text(stringResource(R.string.auth_title))
-                    },
+                TopAppBar(
+                    title = stringResource(R.string.auth_title),
+                    color = MiuixTheme.colorScheme.surface,
                     navigationIcon = {
                         IconButton(onClick = onBackPress) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_arrow_back),
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = MiuixTheme.colorScheme.onBackground,
                             )
                         }
-                    }
+                    },
                 )
             }
         },

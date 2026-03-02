@@ -17,22 +17,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -46,10 +31,20 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xinto.mauth.R
 import com.xinto.mauth.domain.account.model.DomainExportAccount
+import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.component.UriImage
 import com.xinto.mauth.ui.screen.export.component.ZxingQrImage
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
+import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import java.util.UUID
 
 @Composable
@@ -68,10 +63,7 @@ fun ExportScreen(
     ExportScreen(
         onBackNavigate = onBackNavigate,
         onCopyUrlToClipboard = {
-            viewModel.copyUrlToClipboard(
-                label = it.label,
-                url = it.url
-            )
+            viewModel.copyUrlToClipboard(label = it.label, url = it.url)
         },
         mode = mode,
         onModeSelect = viewModel::switchMode,
@@ -79,7 +71,6 @@ fun ExportScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExportScreen(
     onBackNavigate: () -> Unit,
@@ -88,20 +79,13 @@ fun ExportScreen(
     mode: ExportMode,
     onModeSelect: (ExportMode) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = MiuixScrollBehavior()
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.export_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackNavigate) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+            MauthTopBar(
+                title = stringResource(R.string.export_title),
+                scrollBehavior = scrollBehavior,
+                onBack = onBackNavigate,
             )
         }
     ) { paddingValues ->
@@ -122,36 +106,42 @@ fun ExportScreen(
                     }
                 }
                 is ExportScreenState.Success -> {
-                    SingleChoiceSegmentedButtonRow(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 12.dp)
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        ExportMode.entries.forEachIndexed { i, m ->
-                            SegmentedButton(
-                                selected = mode == m,
+                        ExportMode.entries.forEach { m ->
+                            Button(
+                                modifier = Modifier.weight(1f),
                                 onClick = { onModeSelect(m) },
-                                shape = SegmentedButtonDefaults.itemShape(index = i, count = ExportMode.entries.size)
+                                colors = if (mode == m)
+                                    ButtonDefaults.buttonColorsPrimary()
+                                else
+                                    ButtonDefaults.buttonColors(),
                             ) {
-                                Text(m.name)
+                                Text(
+                                    text = m.name,
+                                    color = if (mode == m)
+                                        MiuixTheme.colorScheme.onPrimary
+                                    else
+                                        MiuixTheme.colorScheme.onBackground,
+                                )
                             }
                         }
                     }
 
                     when (mode) {
-                        ExportMode.Batch -> {
-                            BatchExports(
-                                modifier = Modifier.weight(1f),
-                                uris = state.batchUris
-                            )
-                        }
-                        ExportMode.Individual -> {
-                            IndividualExports(
-                                modifier = Modifier.weight(1f),
-                                accounts = state.individualAccounts,
-                                onCopyUrlToClipboard = onCopyUrlToClipboard
-                            )
-                        }
+                        ExportMode.Batch -> BatchExports(
+                            modifier = Modifier.weight(1f),
+                            uris = state.batchUris
+                        )
+                        ExportMode.Individual -> IndividualExports(
+                            modifier = Modifier.weight(1f),
+                            accounts = state.individualAccounts,
+                            onCopyUrlToClipboard = onCopyUrlToClipboard
+                        )
                     }
                 }
                 is ExportScreenState.Empty -> {
@@ -165,9 +155,10 @@ fun ExportScreen(
                             painter = painterResource(R.drawable.ic_no_accounts),
                             contentDescription = null
                         )
-                        ProvideTextStyle(MaterialTheme.typography.headlineSmall) {
-                            Text(stringResource(R.string.export_state_empty))
-                        }
+                        Text(
+                            text = stringResource(R.string.export_state_empty),
+                            style = MiuixTheme.textStyles.headline2,
+                        )
                     }
                 }
                 is ExportScreenState.Error -> {
@@ -206,7 +197,7 @@ private fun BatchExports(
                 data = uris[it],
                 size = 512,
                 backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onSurface
+                contentColor = MiuixTheme.colorScheme.onBackground
             )
         }
         if (uris.size > 1) {
@@ -218,14 +209,12 @@ private fun BatchExports(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 repeat(uris.size) {
-                    val selectedBackgroundColor = MaterialTheme.colorScheme.primary
-                    val unselectedBackgroundColor = MaterialTheme.colorScheme.secondary
+                    val selectedColor = MiuixTheme.colorScheme.primary
+                    val unselectedColor = MiuixTheme.colorScheme.secondaryContainer
                     Box(
                         modifier = Modifier
                             .drawBehind {
-                                val color =
-                                    if (pagerState.currentPage == it) selectedBackgroundColor else unselectedBackgroundColor
-                                drawCircle(color)
+                                drawCircle(if (pagerState.currentPage == it) selectedColor else unselectedColor)
                             }
                             .animateContentSize()
                             .size(if (pagerState.currentPage == it) 16.dp else 12.dp)
@@ -233,11 +222,10 @@ private fun BatchExports(
                 }
             }
         }
-
         Text(
             modifier = Modifier.padding(32.dp),
             text = stringResource(R.string.export_batch_hint),
-            style = MaterialTheme.typography.titleSmall,
+            style = MiuixTheme.textStyles.title3,
             textAlign = TextAlign.Center
         )
     }
@@ -256,27 +244,23 @@ private fun IndividualExports(
         verticalItemSpacing = 16.dp,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(
-            items = accounts,
-            key = { it.id }
-        ) { account ->
+        items(items = accounts, key = { it.id }) { account ->
             Surface(
                 onClick = { onCopyUrlToClipboard(account) },
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
-                border = CardDefaults.outlinedCardBorder(),
-                shape = MaterialTheme.shapes.medium
+                color = MiuixTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium,
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        shape = RoundedCornerShape(12.dp),
+                        color = MiuixTheme.colorScheme.tertiaryContainer,
                     ) {
                         ZxingQrImage(
                             modifier = Modifier.fillMaxSize(),
                             data = account.url,
                             backgroundColor = Color.Transparent,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MiuixTheme.colorScheme.onBackground
                         )
                     }
                     Row(
@@ -285,8 +269,8 @@ private fun IndividualExports(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Surface(
-                            shape = MaterialTheme.shapes.small,
-                            color = MaterialTheme.colorScheme.secondaryContainer
+                            shape = RoundedCornerShape(8.dp),
+                            color = MiuixTheme.colorScheme.primaryContainer,
                         ) {
                             Box(
                                 modifier = Modifier.size(36.dp),
@@ -297,7 +281,7 @@ private fun IndividualExports(
                                 } else {
                                     Text(
                                         text = account.shortLabel,
-                                        style = MaterialTheme.typography.titleSmall
+                                        style = MiuixTheme.textStyles.title3,
                                     )
                                 }
                             }
@@ -306,12 +290,12 @@ private fun IndividualExports(
                             if (account.issuer.isNotEmpty()) {
                                 Text(
                                     text = account.issuer,
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MiuixTheme.textStyles.footnote1,
                                 )
                             }
                             Text(
                                 text = account.label,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MiuixTheme.textStyles.body1,
                             )
                         }
                     }

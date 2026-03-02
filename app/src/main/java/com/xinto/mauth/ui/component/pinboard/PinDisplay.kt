@@ -12,9 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalTextStyle
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,8 +34,8 @@ fun PinDisplay(
 ) {
     val inspectionMode = LocalInspectionMode.current
     val color = when (error) {
-        true -> MaterialTheme.colorScheme.errorContainer
-        false -> MaterialTheme.colorScheme.secondaryContainer
+        true -> MiuixTheme.colorScheme.primaryVariant
+        false -> MiuixTheme.colorScheme.secondaryContainer
     }
     Surface(
         modifier = modifier,
@@ -66,7 +67,7 @@ fun PinDisplay(
                 ) {
                     Text(
                         text = "•",
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MiuixTheme.textStyles.headline2,
                         textAlign = TextAlign.Center,
                     )
                 }

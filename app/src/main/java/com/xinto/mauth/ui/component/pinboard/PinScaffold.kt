@@ -7,20 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -30,13 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.xinto.mauth.ui.theme.MauthTheme
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -44,13 +39,6 @@ fun PinScaffold(
     modifier: Modifier = Modifier,
     state: PinBoardState = rememberPinBoardState(),
     topBar: @Composable () -> Unit = {},
-    bottomBar: @Composable () -> Unit = {},
-    snackbarHost: @Composable () -> Unit = {},
-    floatingActionButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: FabPosition = FabPosition.End,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = contentColorFor(containerColor),
-    contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     windowSizeClass: WindowSizeClass = calculateWindowSizeClass(LocalActivity.current!!),
     description: (@Composable () -> Unit)? = null,
     error: Boolean = false,
@@ -59,19 +47,12 @@ fun PinScaffold(
     Scaffold(
         modifier = modifier,
         topBar = topBar,
-        bottomBar = bottomBar,
-        snackbarHost = snackbarHost,
-        floatingActionButton = floatingActionButton,
-        floatingActionButtonPosition = floatingActionButtonPosition,
-        containerColor = containerColor,
-        contentColor = contentColor,
-        contentWindowInsets = contentWindowInsets,
-    ) {
+    ) { paddingValues ->
         if (windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it)
+                    .padding(paddingValues)
                     .padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
@@ -87,7 +68,7 @@ fun PinScaffold(
                             contentAlignment = Alignment.Center
                         ) {
                             CompositionLocalProvider(
-                                LocalTextStyle provides MaterialTheme.typography.headlineMedium.copy(
+                                LocalTextStyle provides MiuixTheme.textStyles.headline2.copy(
                                     textAlign = TextAlign.Center
                                 )
                             ) {
@@ -97,8 +78,7 @@ fun PinScaffold(
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                     PinDisplay(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f),
+                        modifier = Modifier.fillMaxWidth(0.5f),
                         length = codeLength,
                         error = error,
                     )
@@ -114,7 +94,7 @@ fun PinScaffold(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it)
+                    .padding(paddingValues)
                     .padding(start = 40.dp, top = 40.dp, end = 40.dp, bottom = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -133,7 +113,7 @@ fun PinScaffold(
                             contentAlignment = Alignment.Center
                         ) {
                             CompositionLocalProvider(
-                                LocalTextStyle provides MaterialTheme.typography.headlineMedium.copy(
+                                LocalTextStyle provides MiuixTheme.textStyles.headline2.copy(
                                     textAlign = TextAlign.Center
                                 )
                             ) {
@@ -142,8 +122,7 @@ fun PinScaffold(
                         }
                     }
                     PinDisplay(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         length = codeLength,
                         error = error,
                     )
@@ -174,6 +153,21 @@ fun PinScaffold_WithDescription() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
         )
     }
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Composable
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun PinScaffold_WithDescription() {
+    MauthTheme {
+        PinScaffold(
+            description = {
+                Text("Enter PIN")
+            },
+            codeLength = 5,
+            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -187,4 +181,5 @@ fun PinScaffold_WithoutDescription() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize.Unspecified)
         )
     }
+}
 }

@@ -1,23 +1,10 @@
 package com.xinto.mauth.ui.component.form
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.xinto.mauth.R
+import top.yukonga.miuix.kmp.extra.WindowDropdown
 
 class ComboBoxFormField<E: Enum<E>>(
     initial: E,
@@ -28,49 +15,17 @@ class ComboBoxFormField<E: Enum<E>>(
 
     private val clazz = initial.declaringJavaClass
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun invoke(modifier: Modifier) {
-        val (expanded, setExpanded) = remember {
-            mutableStateOf(false)
-        }
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = setExpanded
-        ) {
-            OutlinedTextField(
-                modifier = modifier.menuAnchor(MenuAnchorType.PrimaryEditable),
-                value = value.name,
-                onValueChange = {},
-                singleLine = true,
-                label = {
-                    Text(stringResource(label))
-                },
-                readOnly = true,
-                trailingIcon = {
-                    val iconRotation by animateFloatAsState(if (expanded) 180f else 0f)
-                    Icon(
-                        modifier = Modifier.rotate(iconRotation),
-                        painter = painterResource(R.drawable.ic_keyboard_arrow_down),
-                        contentDescription = null
-                    )
-                },
-                isError = error
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { setExpanded(false) }
-            ) {
-                clazz.enumConstants!!.forEach {
-                    DropdownMenuItem(
-                        text = { Text(it.name) },
-                        onClick = {
-                            setExpanded(false)
-                            value = it
-                        }
-                    )
-                }
-            }
-        }
+        val items = clazz.enumConstants!!.map { it.name }
+        val selectedIndex = clazz.enumConstants!!.indexOfFirst { it == value }.coerceAtLeast(0)
+        WindowDropdown(
+            title = stringResource(label),
+            items = items,
+            selectedIndex = selectedIndex,
+            onSelectedIndexChange = { index ->
+                clazz.enumConstants!!.getOrNull(index)?.let { value = it }
+            },
+        )
     }
 }

@@ -9,13 +9,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
 import com.xinto.mauth.ui.theme.MauthTheme
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun LinkedButtonsRow(
@@ -35,7 +34,7 @@ fun LinkedButtonsRow(
     Row(
         modifier = modifier
             .heightIn(min = 64.dp)
-            .clip(MaterialTheme.shapes.extraLarge),
+            .clip(RoundedCornerShape(28.dp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -53,8 +52,8 @@ fun RowScope.LinkedButton(
     Surface(
         modifier = modifier.weight(1f),
         onClick = onClick,
-        shape = MaterialTheme.shapes.extraSmall,
-        color = MaterialTheme.colorScheme.secondaryContainer
+        shape = RoundedCornerShape(4.dp),
+        color = MiuixTheme.colorScheme.secondaryContainer,
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -67,9 +66,7 @@ fun RowScope.LinkedButton(
             ) {
                 icon()
             }
-            CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodyLarge) {
-                title()
-            }
+            title()
         }
     }
 }

@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -184,7 +184,7 @@ data class PinBoardState(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PinBoardPreview_Plain() {
     MauthTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface(color = MiuixTheme.colorScheme.background) {
             PinBoard(
                 state = rememberPinBoardState(),
             )
@@ -197,7 +197,7 @@ private fun PinBoardPreview_Plain() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PinBoardPreview_WithFingerprint() {
     MauthTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface(color = MiuixTheme.colorScheme.background) {
             PinBoard(
                 state = rememberPinBoardState(showFingerprint = true),
             )
@@ -210,7 +210,7 @@ private fun PinBoardPreview_WithFingerprint() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PinBoardPreview_WithEnter() {
     MauthTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface(color = MiuixTheme.colorScheme.background) {
             PinBoard(
                 state = rememberPinBoardState(showEnter = true),
             )
@@ -223,7 +223,7 @@ private fun PinBoardPreview_WithEnter() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PinBoardPreview_WithFingerprintAndEnter() {
     MauthTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface(color = MiuixTheme.colorScheme.background) {
             PinBoard(
                 state = rememberPinBoardState(
                     showFingerprint = true,

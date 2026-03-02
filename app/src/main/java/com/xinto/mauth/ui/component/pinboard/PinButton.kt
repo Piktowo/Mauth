@@ -15,8 +15,7 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.surfaceColorAtElevation
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -101,7 +100,7 @@ fun PinButton(
         contentAlignment = Alignment.Center
     ) {
         CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.headlineLarge,
+            LocalTextStyle provides MiuixTheme.textStyles.headline1,
             LocalContentColor provides contentColor,
             content = content
         )
@@ -117,10 +116,10 @@ object PinButtonDefaults {
 
     @Composable
     fun plainPinButtonColors(
-        backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
-        backgroundColorPressed: Color = MaterialTheme.colorScheme.primary,
-        foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
-        foregroundColorPressed: Color = MaterialTheme.colorScheme.onPrimary
+        backgroundColor: Color = MiuixTheme.colorScheme.secondaryContainer,
+        backgroundColorPressed: Color = MiuixTheme.colorScheme.primary,
+        foregroundColor: Color = MiuixTheme.colorScheme.onBackground,
+        foregroundColorPressed: Color = MiuixTheme.colorScheme.onPrimary
     ): PinButtonColors {
         return PinButtonColors(
             backgroundColor = backgroundColor,
@@ -132,10 +131,10 @@ object PinButtonDefaults {
 
     @Composable
     fun primaryPinButtonColors(
-        backgroundColor: Color = MaterialTheme.colorScheme.secondary,
-        backgroundColorPressed: Color = MaterialTheme.colorScheme.primary,
-        foregroundColor: Color = MaterialTheme.colorScheme.onSecondary,
-        foregroundColorPressed: Color = MaterialTheme.colorScheme.onPrimary
+        backgroundColor: Color = MiuixTheme.colorScheme.primaryVariant,
+        backgroundColorPressed: Color = MiuixTheme.colorScheme.primary,
+        foregroundColor: Color = MiuixTheme.colorScheme.onBackground,
+        foregroundColorPressed: Color = MiuixTheme.colorScheme.onPrimary
     ): PinButtonColors {
         return PinButtonColors(
             backgroundColor = backgroundColor,
@@ -148,7 +147,7 @@ object PinButtonDefaults {
     @Composable
     fun plainPinButtonShapes(
         shape: CornerBasedShape = RoundedCornerShape(50),
-        shapePressed: CornerBasedShape = MaterialTheme.shapes.large
+        shapePressed: CornerBasedShape = RoundedCornerShape(16.dp)
     ): PinButtonShapes {
         return PinButtonShapes(
             shape = shape,
