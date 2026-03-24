@@ -157,8 +157,8 @@ fun HomeScaffold(
                 },
             )
         },
-        bottomBar = if (!isSelectionActive) {
-            {
+        bottomBar = {
+            if (!isSelectionActive) {
                 Surface(
                     color = MiuixTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxWidth()
@@ -202,7 +202,7 @@ fun HomeScaffold(
                     }
                 }
             }
-        } else null,
+        },
         content = content,
     )
 }
