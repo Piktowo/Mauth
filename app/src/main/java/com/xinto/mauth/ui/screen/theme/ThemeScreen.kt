@@ -28,6 +28,7 @@ import com.xinto.mauth.ui.component.MauthCard
 import com.xinto.mauth.ui.component.MauthScreenColumn
 import com.xinto.mauth.ui.component.MauthSmallTitle
 import com.xinto.mauth.ui.component.MauthTopBar
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import com.xinto.mauth.ui.theme.colorFromArgb
 import com.xinto.mauth.ui.theme.colorToArgbLong
 import com.xinto.mauth.ui.theme.isDefaultThemeSeedArgb
@@ -77,9 +78,13 @@ fun ThemeScreen(onExit: () -> Unit) {
             item {
                 MauthSmallTitle(
                     text = stringResource(R.string.theme_category_mode),
-                    modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.sectionTitleStart,
+                        top = MauthUiTokens.Space.tight,
+                        bottom = MauthUiTokens.Space.tight / 2,
+                    ),
                 )
-                MauthCard {
+                MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                     WindowDropdown(
                         title = stringResource(R.string.theme_prefs_mode),
                         items = themeItems,
@@ -91,9 +96,13 @@ fun ThemeScreen(onExit: () -> Unit) {
                 }
                 MauthSmallTitle(
                     text = stringResource(R.string.theme_category_color),
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.sectionTitleStart,
+                        top = MauthUiTokens.Space.regular,
+                        bottom = MauthUiTokens.Space.tight / 2,
+                    ),
                 )
-                MauthCard {
+                MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                     BasicComponent(
                         title = stringResource(R.string.theme_prefs_color),
                         summary = if (isDefaultThemeSeedArgb(themeSeedColor)) {
@@ -126,7 +135,7 @@ fun ThemeScreen(onExit: () -> Unit) {
         show = showColorPicker,
         title = stringResource(R.string.theme_color_picker_title),
         onDismissRequest = { showColorPicker.value = false },
-        insideMargin = DpSize(24.dp, 16.dp),
+        insideMargin = DpSize(MauthUiTokens.Space.sectionTitleStart, MauthUiTokens.Space.regular),
     ) {
         ColorPicker(
             color = editingColor,
@@ -144,11 +153,19 @@ fun ThemeScreen(onExit: () -> Unit) {
                 parseThemeHex(normalized)?.let { editingColor = it }
             },
             label = stringResource(R.string.theme_color_hex_label),
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = MauthUiTokens.Space.tight),
+            cornerRadius = MauthUiTokens.Radius.input,
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = { viewModel.resetThemeSeedColor() }, modifier = Modifier.weight(1f)) {
+        Spacer(modifier = Modifier.height(MauthUiTokens.Space.regular))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.compact)
+        ) {
+            Button(
+                onClick = { viewModel.resetThemeSeedColor() },
+                modifier = Modifier.weight(1f),
+                cornerRadius = MauthUiTokens.Radius.button,
+            ) {
                 Text(stringResource(R.string.theme_color_reset))
             }
             Button(
@@ -160,6 +177,7 @@ fun ThemeScreen(onExit: () -> Unit) {
                 },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColorsPrimary(),
+                cornerRadius = MauthUiTokens.Radius.button,
             ) {
                 Text(text = stringResource(R.string.theme_color_apply), color = MiuixTheme.colorScheme.background)
             }

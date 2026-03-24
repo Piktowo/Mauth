@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xinto.mauth.R
 import com.xinto.mauth.ui.component.MauthCard
@@ -15,6 +14,7 @@ import com.xinto.mauth.ui.component.MauthSmallTitle
 import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.component.rememberBiometricHandler
 import com.xinto.mauth.ui.component.rememberBiometricPromptData
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import org.koin.androidx.compose.koinViewModel
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
@@ -65,9 +65,13 @@ fun SettingsScreen(
             item {
                 MauthSmallTitle(
                     text = stringResource(R.string.settings_category_security),
-                    modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.sectionTitleStart,
+                        top = MauthUiTokens.Space.tight,
+                        bottom = MauthUiTokens.Space.tight / 2,
+                    ),
                 )
-                MauthCard {
+                MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                     SuperSwitch(
                         title = stringResource(R.string.settings_prefs_securemode),
                         summary = stringResource(R.string.settings_prefs_securemode_description),
@@ -97,9 +101,13 @@ fun SettingsScreen(
 
                 MauthSmallTitle(
                     text = stringResource(R.string.settings_category_appearance),
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.sectionTitleStart,
+                        top = MauthUiTokens.Space.regular,
+                        bottom = MauthUiTokens.Space.tight / 2,
+                    ),
                 )
-                MauthCard {
+                MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                     SuperArrow(
                         title = stringResource(R.string.settings_prefs_theme),
                         summary = stringResource(R.string.settings_prefs_theme_description),
@@ -109,9 +117,13 @@ fun SettingsScreen(
 
                 MauthSmallTitle(
                     text = stringResource(R.string.settings_category_backup),
-                    modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.sectionTitleStart,
+                        top = MauthUiTokens.Space.regular,
+                        bottom = MauthUiTokens.Space.tight / 2,
+                    ),
                 )
-                MauthCard {
+                MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                     SuperArrow(
                         title = stringResource(R.string.settings_prefs_webdav_backup),
                         summary = stringResource(R.string.settings_prefs_webdav_backup_description),
