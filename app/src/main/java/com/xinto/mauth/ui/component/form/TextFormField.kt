@@ -44,7 +44,7 @@ class TextFormField(
                     }
                 },
                 maxLines = 1,
-                shape = MiuixTheme.shapes.medium,
+                cornerRadius = 12.dp,
             )
             if (required) {
                 Text(

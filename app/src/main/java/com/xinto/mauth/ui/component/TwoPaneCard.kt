@@ -34,7 +34,6 @@ fun TwoPaneCard(
         ),
         cornerRadius = cornerRadius,
         insideMargin = PaddingValues(16.dp),
-        color = MiuixTheme.colorScheme.tertiaryContainer,
     ) {
         Column {
             topContent()

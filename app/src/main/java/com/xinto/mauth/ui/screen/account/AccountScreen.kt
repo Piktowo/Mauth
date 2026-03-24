@@ -29,6 +29,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import java.util.UUID
 
 @Composable
@@ -114,7 +115,7 @@ fun AccountScreen(
                         onClick = onSave,
                         enabled = state is AccountScreenState.Success,
                         color = MiuixTheme.colorScheme.primary,
-                        shape = MiuixTheme.shapes.medium,
+                        cornerRadius = 12.dp,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     ) {
                         Box(

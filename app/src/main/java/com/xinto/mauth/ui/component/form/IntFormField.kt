@@ -35,7 +35,7 @@ class IntFormField(
                 label = stringResource(label),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 maxLines = 1,
-                shape = MiuixTheme.shapes.medium,
+                cornerRadius = 12.dp,
             )
             if (max != Int.MAX_VALUE) {
                 Text(
