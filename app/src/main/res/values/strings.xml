@@ -26,6 +26,7 @@
     <string name="home_sort_issuer_descending">Issuer (Z-A)</string>
     <string name="home_sort_date_ascending">Oldest first</string>
     <string name="home_sort_date_descending">Newest first</string>
+    <string name="home_add_account">Add account</string>
 
     <string name="qrscan_title">Scan a QR code</string>
     <string name="qrscan_permissions_title">Missing permissions</string>
