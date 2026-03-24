@@ -63,7 +63,11 @@ fun HomeAccountCard(
                     if (account.icon != null) {
                         UriImage(uri = account.icon!!)
                     } else {
-                        Text(account.shortLabel, fontSize = MiuixTheme.textStyles.title3.fontSize)
+                        Text(
+                            account.shortLabel, 
+                            fontSize = MiuixTheme.textStyles.title3.fontSize,
+                            fontWeight = MiuixTheme.textStyles.title3.fontWeight
+                        )
                     }
                 },
                 name = {
@@ -72,6 +76,7 @@ fun HomeAccountCard(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         color = MiuixTheme.colorScheme.onBackground,
+                        style = MiuixTheme.textStyles.title3,
                     )
                 },
                 issuer = {
@@ -79,7 +84,7 @@ fun HomeAccountCard(
                         Text(
                             text = account.issuer,
                             fontSize = MiuixTheme.textStyles.body2.fontSize,
-                            color = MiuixTheme.colorScheme.onSurfaceSecondary,
+                            color = MiuixTheme.colorScheme.onSurfaceSecondary.copy(alpha = 0.7f),
                         )
                     }
                 },
@@ -98,33 +103,46 @@ fun HomeAccountCard(
                             )
                         }
                     } else {
-                        IconButton(onClick = onEdit) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_edit),
-                                contentDescription = null,
-                            )
+                        Surface(
+                            onClick = onEdit,
+                            color = MiuixTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_edit),
+                                    contentDescription = null,
+                                    tint = MiuixTheme.colorScheme.onSurfaceSecondary,
+                                )
+                            }
                         }
                     }
                 },
             )
         },
         bottomContent = {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                RealtimeInformation(
-                    modifier = Modifier.weight(1f),
-                    realtimeData = realtimeData,
-                    showCode = showCode,
-                    onCounterClick = onCounterClick,
-                )
-                InteractionButtons(
-                    showCode = showCode,
-                    onShowCodeChange = { showCode = it },
-                    onCopyCode = { onCopyCode(showCode) },
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    RealtimeInformation(
+                        modifier = Modifier.weight(1f),
+                        realtimeData = realtimeData,
+                        showCode = showCode,
+                        onCounterClick = onCounterClick,
+                    )
+                    InteractionButtons(
+                        showCode = showCode,
+                        onShowCodeChange = { showCode = it },
+                        onCopyCode = { onCopyCode(showCode) },
+                    )
+                }
             }
         },
         onClick = onClick,
@@ -138,14 +156,17 @@ private fun InteractionButtons(
     onShowCodeChange: (Boolean) -> Unit,
     onCopyCode: () -> Unit,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         Surface(
             onClick = { onShowCodeChange(!showCode) },
             color = if (showCode) MiuixTheme.colorScheme.primary
-                    else MiuixTheme.colorScheme.secondaryContainer,
-            shape = CircleShape,
+                    else MiuixTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+            shape = RoundedCornerShape(12.dp),
         ) {
-            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(44.dp), contentAlignment = Alignment.Center) {
                 if (showCode) {
                     Icon(
                         painter = painterResource(R.drawable.ic_visibility),
@@ -156,19 +177,21 @@ private fun InteractionButtons(
                     Icon(
                         painter = painterResource(R.drawable.ic_visibility_off),
                         contentDescription = null,
+                        tint = MiuixTheme.colorScheme.onSurfaceSecondary,
                     )
                 }
             }
         }
         Surface(
             onClick = onCopyCode,
-            color = MiuixTheme.colorScheme.secondaryContainer,
-            shape = CircleShape,
+            color = MiuixTheme.colorScheme.primary,
+            shape = RoundedCornerShape(12.dp),
         ) {
-            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(44.dp), contentAlignment = Alignment.Center) {
                 Icon(
                     painter = painterResource(R.drawable.ic_copy_all),
                     contentDescription = null,
+                    tint = MiuixTheme.colorScheme.onPrimary,
                 )
             }
         }
@@ -235,9 +258,10 @@ private fun RealtimeInformation(
             val showAwareCode = if (show) code else "•".repeat(code.length)
             Text(
                 text = showAwareCode,
-                fontSize = MiuixTheme.textStyles.title3.fontSize,
+                style = MiuixTheme.textStyles.title2,
                 fontFamily = FontFamily.Monospace,
-                letterSpacing = 2.sp,
+                letterSpacing = 3.sp,
+                color = MiuixTheme.colorScheme.onBackground,
             )
         }
     }
@@ -252,15 +276,15 @@ private fun AccountInfo(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(56.dp)
                 .background(
                     color = MiuixTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -268,10 +292,10 @@ private fun AccountInfo(
         }
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            issuer()
             name()
+            issuer()
         }
         trailing()
     }

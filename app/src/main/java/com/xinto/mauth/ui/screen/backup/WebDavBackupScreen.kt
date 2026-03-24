@@ -1,4 +1,4 @@
-﻿package com.xinto.mauth.ui.screen.backup
+package com.xinto.mauth.ui.screen.backup
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -73,89 +73,123 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
             }
         } else {
             MauthScreenColumn(scrollBehavior = scrollBehavior, innerPadding = innerPadding) {
+                // 本地文件备份分组
                 item {
                     MauthSmallTitle(
                         text = stringResource(R.string.local_backup_header),
-                        modifier = Modifier.padding(start = 24.dp, top = 8.dp, bottom = 4.dp),
+                        modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp),
                     )
-                    MauthCard {
-                        BasicComponent(
-                            title = stringResource(R.string.local_backup),
-                            onClick = { exportLauncher.launch("mauth_backup.txt") },
-                        )
-                        BasicComponent(
-                            title = stringResource(R.string.local_restore),
-                            onClick = { importLauncher.launch(arrayOf("text/plain", "*/*")) },
-                        )
+                    MauthCard(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        Column {
+                            BasicComponent(
+                                title = stringResource(R.string.local_backup),
+                                onClick = { exportLauncher.launch("mauth_backup.txt") },
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                            )
+                            BasicComponent(
+                                title = stringResource(R.string.local_restore),
+                                onClick = { importLauncher.launch(arrayOf("text/plain", "*/*")) },
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                            )
+                        }
                     }
+                }
 
+                // WebDAV 备份分组
+                item {
                     MauthSmallTitle(
                         text = stringResource(R.string.webdav_header),
-                        modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                        modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 8.dp),
                     )
-                    MauthCard {
+                    MauthCard(modifier = Modifier.padding(horizontal = 16.dp)) {
                         Column(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
-                            Text(
-                                text = stringResource(R.string.webdav_url_supporting),
-                                style = MiuixTheme.textStyles.footnote1,
-                                color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-                            )
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = url,
-                                onValueChange = viewModel::updateUrl,
-                                label = stringResource(R.string.webdav_url),
-                                maxLines = 1,
-                            )
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = username,
-                                onValueChange = viewModel::updateUsername,
-                                label = stringResource(R.string.webdav_username),
-                                maxLines = 1,
-                            )
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = password,
-                                onValueChange = viewModel::updatePassword,
-                                label = stringResource(R.string.webdav_password),
-                                visualTransformation = PasswordVisualTransformation(),
-                                maxLines = 1,
-                            )
+                            // WebDAV 说明信息块
+                            Card(
+                                cornerRadius = 12.dp,
+                                insideMargin = PaddingValues(12.dp),
+                                color = MiuixTheme.colorScheme.surfaceVariant,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.webdav_url_supporting),
+                                    style = MiuixTheme.textStyles.footnote1,
+                                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                                )
+                            }
+                            
+                            // 输入框组
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    value = url,
+                                    onValueChange = viewModel::updateUrl,
+                                    label = stringResource(R.string.webdav_url),
+                                    maxLines = 1,
+                                )
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    value = username,
+                                    onValueChange = viewModel::updateUsername,
+                                    label = stringResource(R.string.webdav_username),
+                                    maxLines = 1,
+                                )
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    value = password,
+                                    onValueChange = viewModel::updatePassword,
+                                    label = stringResource(R.string.webdav_password),
+                                    visualTransformation = PasswordVisualTransformation(),
+                                    maxLines = 1,
+                                )
+                            }
                         }
                     }
+                }
 
-                    // 操作按钮移到卡片外面，与输入表单分离（符合 Miuix 规范）
+                // 操作按钮组
+                item {
                     Column(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp, top = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = viewModel::testConnection,
-                        ) {
-                            Text(stringResource(R.string.webdav_test_connection))
-                        }
+                        // 主按钮：立即备份
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = viewModel::backup,
                             colors = ButtonDefaults.buttonColorsPrimary(),
+                            cornerRadius = 12.dp,
                         ) {
                             Text(
                                 text = stringResource(R.string.webdav_backup),
                                 color = MiuixTheme.colorScheme.background,
                             )
                         }
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = viewModel::restore,
+                        
+                        // 次按钮：测试连接和立即恢复
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(stringResource(R.string.webdav_restore))
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = viewModel::testConnection,
+                                cornerRadius = 12.dp,
+                            ) {
+                                Text(stringResource(R.string.webdav_test_connection))
+                            }
+                            Button(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = viewModel::restore,
+                                cornerRadius = 12.dp,
+                            ) {
+                                Text(stringResource(R.string.webdav_restore))
+                            }
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
+                        
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
             }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -173,16 +174,16 @@ fun HomeScaffold(
                         Surface(
                             onClick = onAdd,
                             color = MiuixTheme.colorScheme.primary,
-                            shape = CircleShape
+                            shape = RoundedCornerShape(12.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                                    .padding(horizontal = 24.dp, vertical = 14.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_add),

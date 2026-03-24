@@ -30,9 +30,9 @@ fun HomeScreenSuccess(
     LazyVerticalGrid(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        columns = GridCells.Adaptive(minSize = 250.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        columns = GridCells.Adaptive(minSize = 280.dp),
     ) {
         items(
             items = accounts,

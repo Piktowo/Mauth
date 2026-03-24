@@ -35,13 +35,14 @@ class IntFormField(
                 label = stringResource(label),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 maxLines = 1,
+                shape = MiuixTheme.shapes.medium,
             )
             if (max != Int.MAX_VALUE) {
                 Text(
                     text = stringResource(R.string.account_data_status_range, min.toString(), max.toString()),
-                    modifier = Modifier.padding(start = 8.dp, top = 4.dp),
+                    modifier = Modifier.padding(start = 12.dp, top = 6.dp),
                     style = MiuixTheme.textStyles.footnote1,
-                    color = if (error) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    color = if (error) MiuixTheme.colorScheme.error else MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 )
             }
         }

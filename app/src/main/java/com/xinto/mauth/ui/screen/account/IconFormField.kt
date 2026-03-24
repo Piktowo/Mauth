@@ -57,43 +57,42 @@ class IconFormField(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
-                modifier = Modifier.size(96.dp),
-                color = MiuixTheme.colorScheme.secondaryContainer,
-                shape = CircleShape,
-                onClick = {
-                    imageSelectLauncher.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
-                    )
-                }
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                if (value != null) {
-                    UriImage(uri = value!!)
-                } else {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            modifier = Modifier.size(36.dp),
-                            painter = painterResource(R.drawable.ic_add_a_photo),
-                            contentDescription = null,
-                            tint = MiuixTheme.colorScheme.onBackground,
+                Surface(
+                    modifier = Modifier.size(100.dp),
+                    color = MiuixTheme.colorScheme.secondaryContainer,
+                    shape = CircleShape,
+                    onClick = {
+                        imageSelectLauncher.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
                         )
                     }
-                }
-            }
-            if (issuerProvider != null) {
-                Box(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .align(Alignment.Center),
-                    contentAlignment = Alignment.BottomEnd
                 ) {
+                    if (value != null) {
+                        UriImage(uri = value!!)
+                    } else {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                modifier = Modifier.size(36.dp),
+                                painter = painterResource(R.drawable.ic_add_a_photo),
+                                contentDescription = null,
+                                tint = MiuixTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                }
+                if (issuerProvider != null) {
                     Surface(
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 4.dp, y = 4.dp),
                         shape = CircleShape,
                         color = MiuixTheme.colorScheme.primaryContainer,
-                        shadowElevation = 4.dp,
                         onClick = {
                             val issuer = issuerProvider().trim()
                             if (issuer.isEmpty()) return@Surface
@@ -110,7 +109,7 @@ class IconFormField(
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
-                                modifier = Modifier.size(18.dp),
+                                modifier = Modifier.size(20.dp),
                                 painter = painterResource(R.drawable.ic_search),
                                 contentDescription = context.getString(R.string.account_icon_fetch),
                                 tint = MiuixTheme.colorScheme.onPrimaryContainer

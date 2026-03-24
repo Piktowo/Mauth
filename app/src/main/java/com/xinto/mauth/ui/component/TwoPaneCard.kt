@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun TwoPaneCard(
@@ -32,7 +33,8 @@ fun TwoPaneCard(
             onLongClick = onLongClick,
         ),
         cornerRadius = cornerRadius,
-        insideMargin = PaddingValues(12.dp),
+        insideMargin = PaddingValues(16.dp),
+        color = MiuixTheme.colorScheme.tertiaryContainer,
     ) {
         Column {
             topContent()
@@ -40,7 +42,10 @@ fun TwoPaneCard(
                 visible = expanded,
             ) {
                 Column {
-                    HorizontalDivider(Modifier.padding(vertical = 12.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        color = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                    )
                     bottomContent()
                 }
             }

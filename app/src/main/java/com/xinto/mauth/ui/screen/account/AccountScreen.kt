@@ -24,9 +24,11 @@ import org.koin.core.parameter.parametersOf
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.Scaffold
-import top.yukonga.miuix.kmp.basic.TextButton
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import androidx.compose.ui.Alignment
 import java.util.UUID
 
 @Composable
@@ -108,11 +110,24 @@ fun AccountScreen(
                     }
                 },
                 actions = {
-                    TextButton(
-                        text = stringResource(R.string.account_actions_save),
+                    Surface(
                         onClick = onSave,
                         enabled = state is AccountScreenState.Success,
-                    )
+                        color = MiuixTheme.colorScheme.primary,
+                        shape = MiuixTheme.shapes.medium,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.account_actions_save),
+                                color = MiuixTheme.colorScheme.onPrimary,
+                                style = MiuixTheme.textStyles.body1
+                            )
+                        }
+                    }
                 },
                 scrollBehavior = null,
             )
