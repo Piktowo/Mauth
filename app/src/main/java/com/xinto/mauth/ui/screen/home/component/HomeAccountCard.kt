@@ -35,6 +35,7 @@ import com.xinto.mauth.domain.account.model.DomainAccount
 import com.xinto.mauth.domain.otp.model.DomainOtpRealtimeData
 import com.xinto.mauth.ui.component.TwoPaneCard
 import com.xinto.mauth.ui.component.UriImage
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -94,7 +95,7 @@ fun HomeAccountCard(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .background(MiuixTheme.colorScheme.primary)
-                                .padding(4.dp)
+                                .padding(MauthUiTokens.Space.tight / 2)
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_check),
@@ -106,7 +107,7 @@ fun HomeAccountCard(
                         Surface(
                             onClick = onEdit,
                             color = MiuixTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(MauthUiTokens.Radius.cardCompact),
                             modifier = Modifier.size(40.dp)
                         ) {
                             Box(contentAlignment = Alignment.Center) {
@@ -124,12 +125,12 @@ fun HomeAccountCard(
         bottomContent = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.regular)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.regular)
                 ) {
                     RealtimeInformation(
                         modifier = Modifier.weight(1f),
@@ -158,13 +159,13 @@ private fun InteractionButtons(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.compact)
     ) {
         Surface(
             onClick = { onShowCodeChange(!showCode) },
             color = if (showCode) MiuixTheme.colorScheme.primary
                     else MiuixTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(MauthUiTokens.Radius.button),
         ) {
             Box(modifier = Modifier.size(44.dp), contentAlignment = Alignment.Center) {
                 if (showCode) {
@@ -185,7 +186,7 @@ private fun InteractionButtons(
         Surface(
             onClick = onCopyCode,
             color = MiuixTheme.colorScheme.primary,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(MauthUiTokens.Radius.button),
         ) {
             Box(modifier = Modifier.size(44.dp), contentAlignment = Alignment.Center) {
                 Icon(
@@ -210,7 +211,7 @@ private fun RealtimeInformation(
     }
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.compact),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         when (realtimeData) {
@@ -276,7 +277,7 @@ private fun AccountInfo(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.regular),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -284,7 +285,7 @@ private fun AccountInfo(
                 .size(56.dp)
                 .background(
                     color = MiuixTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(MauthUiTokens.Radius.cardRegular),
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -292,7 +293,7 @@ private fun AccountInfo(
         }
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight / 2),
         ) {
             name()
             issuer()

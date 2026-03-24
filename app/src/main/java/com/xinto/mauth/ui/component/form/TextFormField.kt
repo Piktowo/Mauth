@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextField
@@ -44,12 +44,15 @@ class TextFormField(
                     }
                 },
                 maxLines = 1,
-                cornerRadius = 12.dp,
+                cornerRadius = MauthUiTokens.Radius.input,
             )
             if (required) {
                 Text(
                     text = stringResource(R.string.account_data_status_required),
-                    modifier = Modifier.padding(start = 12.dp, top = 6.dp),
+                    modifier = Modifier.padding(
+                        start = MauthUiTokens.Space.helperStart,
+                        top = MauthUiTokens.Space.helperTop,
+                    ),
                     style = MiuixTheme.textStyles.footnote1,
                     color = if (error) MiuixTheme.colorScheme.error else MiuixTheme.colorScheme.onSurfaceVariantSummary,
                 )

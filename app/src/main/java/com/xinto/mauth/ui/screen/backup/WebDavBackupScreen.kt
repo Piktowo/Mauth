@@ -25,6 +25,7 @@ import com.xinto.mauth.ui.component.MauthCard
 import com.xinto.mauth.ui.component.MauthScreenColumn
 import com.xinto.mauth.ui.component.MauthSmallTitle
 import com.xinto.mauth.ui.component.MauthTopBar
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import org.koin.androidx.compose.koinViewModel
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Button
@@ -79,19 +80,23 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                 item {
                     MauthSmallTitle(
                         text = stringResource(R.string.local_backup_header),
-                        modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp),
+                        modifier = Modifier.padding(
+                            start = MauthUiTokens.Space.sectionTitleStart,
+                            top = MauthUiTokens.Space.regular,
+                            bottom = MauthUiTokens.Space.tight,
+                        ),
                     )
-                    MauthCard(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                         Column {
                             BasicComponent(
                                 title = stringResource(R.string.local_backup),
                                 onClick = { exportLauncher.launch("mauth_backup.txt") },
-                                modifier = Modifier.padding(horizontal = 16.dp),
+                                modifier = Modifier.padding(horizontal = MauthUiTokens.Space.regular),
                             )
                             BasicComponent(
                                 title = stringResource(R.string.local_restore),
                                 onClick = { importLauncher.launch(arrayOf("text/plain", "*/*")) },
-                                modifier = Modifier.padding(horizontal = 16.dp),
+                                modifier = Modifier.padding(horizontal = MauthUiTokens.Space.regular),
                             )
                         }
                     }
@@ -101,17 +106,21 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                 item {
                     MauthSmallTitle(
                         text = stringResource(R.string.webdav_header),
-                        modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 8.dp),
+                        modifier = Modifier.padding(
+                            start = MauthUiTokens.Space.sectionTitleStart,
+                            top = MauthUiTokens.Space.groupGap,
+                            bottom = MauthUiTokens.Space.tight,
+                        ),
                     )
-                    MauthCard(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    MauthCard(modifier = Modifier.padding(horizontal = MauthUiTokens.Space.screenHorizontal)) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.padding(MauthUiTokens.Space.cardContent),
+                            verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.regular),
                         ) {
                             // WebDAV 说明信息块
                             Card(
-                                cornerRadius = 12.dp,
-                                insideMargin = PaddingValues(12.dp),
+                                cornerRadius = MauthUiTokens.Radius.cardCompact,
+                                insideMargin = PaddingValues(MauthUiTokens.Space.compact),
                             ) {
                                 Text(
                                     text = stringResource(R.string.webdav_url_supporting),
@@ -122,13 +131,14 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                             
                             // 输入框组
                             Column(
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.compact),
                             ) {
                                 TextField(
                                     modifier = Modifier.fillMaxWidth(),
                                     value = url,
                                     onValueChange = viewModel::updateUrl,
                                     label = stringResource(R.string.webdav_url),
+                                    cornerRadius = MauthUiTokens.Radius.input,
                                     maxLines = 1,
                                 )
                                 TextField(
@@ -136,6 +146,7 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                                     value = username,
                                     onValueChange = viewModel::updateUsername,
                                     label = stringResource(R.string.webdav_username),
+                                    cornerRadius = MauthUiTokens.Radius.input,
                                     maxLines = 1,
                                 )
                                 TextField(
@@ -144,6 +155,7 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                                     onValueChange = viewModel::updatePassword,
                                     label = stringResource(R.string.webdav_password),
                                     visualTransformation = PasswordVisualTransformation(),
+                                    cornerRadius = MauthUiTokens.Radius.input,
                                     maxLines = 1,
                                 )
                             }
@@ -154,15 +166,19 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                 // 操作按钮组
                 item {
                     Column(
-                        modifier = Modifier.padding(horizontal = 16.dp, top = 24.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.padding(
+                            start = MauthUiTokens.Space.screenHorizontal,
+                            end = MauthUiTokens.Space.screenHorizontal,
+                            top = MauthUiTokens.Space.groupGap,
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.compact),
                     ) {
                         // 主按钮：立即备份
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = viewModel::backup,
                             colors = ButtonDefaults.buttonColorsPrimary(),
-                            cornerRadius = 12.dp,
+                            cornerRadius = MauthUiTokens.Radius.button,
                         ) {
                             Text(
                                 text = stringResource(R.string.webdav_backup),
@@ -172,25 +188,27 @@ fun WebDavBackupScreen(onBack: () -> Unit) {
                         
                         // 次按钮：测试连接和立即恢复
                         Column(
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight),
                         ) {
                             Button(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = viewModel::testConnection,
-                                cornerRadius = 12.dp,
+                                colors = ButtonDefaults.buttonColors(),
+                                cornerRadius = MauthUiTokens.Radius.button,
                             ) {
                                 Text(stringResource(R.string.webdav_test_connection))
                             }
                             Button(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = viewModel::restore,
-                                cornerRadius = 12.dp,
+                                colors = ButtonDefaults.buttonColors(),
+                                cornerRadius = MauthUiTokens.Radius.button,
                             ) {
                                 Text(stringResource(R.string.webdav_restore))
                             }
                         }
                         
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(MauthUiTokens.Space.groupGap + MauthUiTokens.Space.tight))
                     }
                 }
             }

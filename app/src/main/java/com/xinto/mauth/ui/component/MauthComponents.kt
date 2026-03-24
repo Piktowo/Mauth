@@ -11,6 +11,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -59,7 +60,7 @@ fun MauthCard(
 ) {
     Card(
         modifier = modifier,
-        cornerRadius = 18.dp,
+        cornerRadius = MauthUiTokens.Radius.cardLarge,
         insideMargin = PaddingValues(0.dp),
     ) {
         content()
@@ -86,8 +87,8 @@ fun MauthScreenColumn(
             .overScrollVertical()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
-            top = innerPadding.calculateTopPadding() + 8.dp,
-            bottom = innerPadding.calculateBottomPadding() + 16.dp,
+            top = innerPadding.calculateTopPadding() + MauthUiTokens.Space.tight,
+            bottom = innerPadding.calculateBottomPadding() + MauthUiTokens.Space.regular,
         ),
         overscrollEffect = null,
         content = content,

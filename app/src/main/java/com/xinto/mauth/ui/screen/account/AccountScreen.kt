@@ -12,9 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xinto.mauth.R
 import com.xinto.mauth.domain.account.model.DomainAccountInfo
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import com.xinto.mauth.ui.screen.account.component.AccountExitDialog
 import com.xinto.mauth.ui.screen.account.state.AccountScreenError
 import com.xinto.mauth.ui.screen.account.state.AccountScreenLoading
@@ -115,7 +117,7 @@ fun AccountScreen(
                         onClick = onSave,
                         enabled = state is AccountScreenState.Success,
                         color = MiuixTheme.colorScheme.primary,
-                        cornerRadius = 12.dp,
+                        shape = RoundedCornerShape(MauthUiTokens.Radius.button),
                         modifier = Modifier.padding(horizontal = 8.dp)
                     ) {
                         Box(
