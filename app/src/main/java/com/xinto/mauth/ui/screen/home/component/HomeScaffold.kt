@@ -177,8 +177,7 @@ fun HomeScaffold(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .width(120.dp)
-                                    .padding(12.dp),
+                                    .padding(horizontal = 20.dp, vertical = 12.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(

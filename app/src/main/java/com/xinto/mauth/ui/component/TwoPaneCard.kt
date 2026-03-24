@@ -24,7 +24,7 @@ fun TwoPaneCard(
     onLongClick: () -> Unit,
 ) {
     val cornerRadius by animateDpAsState(
-        targetValue = if (selected) 4.dp else 16.dp,
+        targetValue = if (selected) 12.dp else 16.dp,
     )
     Card(
         modifier = modifier.combinedClickable(

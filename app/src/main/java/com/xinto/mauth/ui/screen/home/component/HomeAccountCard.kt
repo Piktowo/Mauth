@@ -112,9 +112,10 @@ fun HomeAccountCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 RealtimeInformation(
+                    modifier = Modifier.weight(1f),
                     realtimeData = realtimeData,
                     showCode = showCode,
                     onCounterClick = onCounterClick,
@@ -176,6 +177,7 @@ private fun InteractionButtons(
 
 @Composable
 private fun RealtimeInformation(
+    modifier: Modifier = Modifier,
     realtimeData: DomainOtpRealtimeData,
     showCode: Boolean,
     onCounterClick: () -> Unit,
@@ -184,6 +186,7 @@ private fun RealtimeInformation(
         Pair(showCode, realtimeData.code)
     }
     Row(
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
