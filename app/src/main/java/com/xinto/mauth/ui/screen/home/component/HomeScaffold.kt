@@ -2,23 +2,29 @@ package com.xinto.mauth.ui.screen.home.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.xinto.mauth.R
 import com.xinto.mauth.core.settings.model.SortSetting
 import com.xinto.mauth.ui.screen.home.HomeMoreMenu
 import top.yukonga.miuix.kmp.basic.DropdownImpl
-import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.extra.SuperListPopup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -147,18 +153,50 @@ fun HomeScaffold(
                 },
             )
         },
-        floatingActionButton = {
-            // 选择模式下隐藏 FAB，取消操作已放在顶栏导航图标
-            if (!isSelectionActive) {
-                FloatingActionButton(onClick = onAdd) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_add),
-                        contentDescription = null,
-                        tint = MiuixTheme.colorScheme.onPrimary,
-                    )
-                }
+        bottomBar = if (!isSelectionActive) {
+            Surface(
+                color = MiuixTheme.colorScheme.surface,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    content = {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Surface(
+                            onClick = onAdd,
+                            color = MiuixTheme.colorScheme.primary,
+                            shape = MiuixTheme.shapes.full
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .width(120.dp)
+                                    .padding(12.dp),
+                                contentAlignment = androidx.compose.ui.Alignment.Center
+                            ) {
+                                Row(
+                                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_add),
+                                        contentDescription = null,
+                                        tint = MiuixTheme.colorScheme.onPrimary,
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.home_add_account),
+                                        color = MiuixTheme.colorScheme.onPrimary,
+                                        style = MiuixTheme.textStyles.body1
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                )
             }
-        },
+        } else null,
         content = content,
     )
 }

@@ -144,7 +144,7 @@ private fun InteractionButtons(
                     else MiuixTheme.colorScheme.secondaryContainer,
             shape = CircleShape,
         ) {
-            Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                 if (showCode) {
                     Icon(
                         painter = painterResource(R.drawable.ic_visibility),
@@ -164,7 +164,7 @@ private fun InteractionButtons(
             color = MiuixTheme.colorScheme.secondaryContainer,
             shape = CircleShape,
         ) {
-            Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                 Icon(
                     painter = painterResource(R.drawable.ic_copy_all),
                     contentDescription = null,
@@ -194,7 +194,7 @@ private fun RealtimeInformation(
                     color = MiuixTheme.colorScheme.secondaryContainer,
                     shape = CircleShape,
                 ) {
-                    Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
                         Text(realtimeData.count.toString())
                     }
                 }
