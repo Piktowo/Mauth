@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -156,20 +158,22 @@ fun HomeScaffold(
             )
         },
         bottomBar = if (!isSelectionActive) {
-            Surface(
-                color = MiuixTheme.colorScheme.surface,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    content = {
+            {
+                Surface(
+                    color = MiuixTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Spacer(modifier = Modifier.weight(1f))
                         Surface(
                             onClick = onAdd,
                             color = MiuixTheme.colorScheme.primary,
-                            shape = MiuixTheme.shapes.full
+                            shape = CircleShape
                         ) {
                             Box(
                                 modifier = Modifier
@@ -196,7 +200,7 @@ fun HomeScaffold(
                         }
                         Spacer(modifier = Modifier.weight(1f))
                     }
-                )
+                }
             }
         } else null,
         content = content,
