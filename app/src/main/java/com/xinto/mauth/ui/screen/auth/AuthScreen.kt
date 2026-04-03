@@ -1,6 +1,7 @@
 package com.xinto.mauth.ui.screen.auth
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -106,6 +107,7 @@ fun AuthScreen(
             if (onBackPress != null) {
                 TopAppBar(
                     title = stringResource(R.string.auth_title),
+                    modifier = Modifier.statusBarsPadding(),
                     color = MiuixTheme.colorScheme.surface,
                     navigationIcon = {
                         IconButton(onClick = onBackPress) {

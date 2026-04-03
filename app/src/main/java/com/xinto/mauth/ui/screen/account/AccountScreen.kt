@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -100,6 +101,7 @@ fun AccountScreen(
         topBar = {
             TopAppBar(
                 title = title,
+                modifier = Modifier.statusBarsPadding(),
                 color = MiuixTheme.colorScheme.surface,
                 navigationIcon = {
                     IconButton(onClick = {

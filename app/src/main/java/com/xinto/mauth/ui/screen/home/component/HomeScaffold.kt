@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
@@ -56,6 +58,7 @@ fun HomeScaffold(
         topBar = {
             TopAppBar(
                 title = stringResource(R.string.app_name),
+                modifier = Modifier.statusBarsPadding(),
                 color = MiuixTheme.colorScheme.surface,
                 // 选择模式下固定顶栏，不折叠
                 scrollBehavior = if (!isSelectionActive) scrollBehavior else null,
@@ -162,7 +165,9 @@ fun HomeScaffold(
             if (!isSelectionActive) {
                 Surface(
                     color = MiuixTheme.colorScheme.surface,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
                 ) {
                     Row(
                         modifier = Modifier

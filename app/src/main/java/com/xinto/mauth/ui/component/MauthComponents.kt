@@ -2,7 +2,11 @@ package com.xinto.mauth.ui.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
@@ -32,7 +36,7 @@ fun MauthTopBar(
 ) {
     TopAppBar(
         title = title,
-        modifier = modifier,
+        modifier = modifier.statusBarsPadding(),
         color = MiuixTheme.colorScheme.surface,
         navigationIcon = if (onBack != null) {
             {
@@ -88,7 +92,9 @@ fun MauthScreenColumn(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
             top = innerPadding.calculateTopPadding() + MauthUiTokens.Space.tight,
-            bottom = innerPadding.calculateBottomPadding() + MauthUiTokens.Space.regular,
+            bottom = innerPadding.calculateBottomPadding() +
+                MauthUiTokens.Space.regular +
+                WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
         ),
         overscrollEffect = null,
         content = content,

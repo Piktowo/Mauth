@@ -1,7 +1,9 @@
 package com.xinto.mauth.ui.screen.pinremove
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,6 +53,7 @@ fun PinRemoveScreen(
         topBar = {
             TopAppBar(
                 title = stringResource(R.string.pinremove_title),
+                modifier = Modifier.statusBarsPadding(),
                 color = MiuixTheme.colorScheme.surface,
                 navigationIcon = {
                     IconButton(onClick = onBack) {

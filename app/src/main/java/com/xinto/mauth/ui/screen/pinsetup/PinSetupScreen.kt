@@ -1,12 +1,9 @@
 package com.xinto.mauth.ui.screen.pinsetup
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +51,6 @@ fun PinSetupScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun PinSetupScreen(
     code: String,
@@ -75,6 +71,7 @@ fun PinSetupScreen(
                     is PinSetupScreenState.Initial -> stringResource(R.string.pinsetup_title_create)
                     is PinSetupScreenState.Confirm -> stringResource(R.string.pinsetup_title_confirm)
                 },
+                modifier = Modifier.statusBarsPadding(),
                 color = MiuixTheme.colorScheme.surface,
                 navigationIcon = {
                     IconButton(onClick = onPrevious) {

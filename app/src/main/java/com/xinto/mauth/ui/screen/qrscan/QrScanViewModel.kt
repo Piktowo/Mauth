@@ -29,6 +29,10 @@ class QrScanViewModel(
     private val _scanError = MutableStateFlow<ScanError?>(null)
     val scanError = _scanError.asStateFlow()
 
+    fun clearScanError() {
+        _scanError.value = null
+    }
+
     private val _parseEvent = MutableSharedFlow<DomainAccountInfo?>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST

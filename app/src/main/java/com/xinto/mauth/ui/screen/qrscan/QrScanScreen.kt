@@ -1,24 +1,18 @@
 package com.xinto.mauth.ui.screen.qrscan
 
 import android.Manifest
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.ImageAnalysis
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,10 +34,18 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.xinto.mauth.R
 import com.xinto.mauth.core.camera.QrCodeAnalyzer
 import com.xinto.mauth.domain.account.model.DomainAccountInfo
+import com.xinto.mauth.ui.component.MauthTopBar
 import com.xinto.mauth.ui.screen.qrscan.component.QrScanCamera
 import com.xinto.mauth.ui.screen.qrscan.component.QrScanPermissionDeniedDialog
 import com.xinto.mauth.ui.screen.qrscan.component.rememberCameraState
+import com.xinto.mauth.ui.theme.MauthUiTokens
 import org.koin.androidx.compose.koinViewModel
+import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.Surface
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -73,11 +75,12 @@ fun QrScanScreen(
             cameraPermission.launchPermissionRequest()
         },
         batchData = batchData,
-        scanError = scanError
+        scanError = scanError,
+        onScanErrorShown = viewModel::clearScanError,
     )
 }
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun QrScanScreen(
     onBack: () -> Unit,
@@ -85,7 +88,8 @@ fun QrScanScreen(
     permissionStatus: PermissionStatus,
     onRequestPermission: () -> Unit,
     batchData: BatchData,
-    scanError: ScanError?
+    scanError: ScanError?,
+    onScanErrorShown: () -> Unit = {},
 ) {
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
     var showPermissionDeniedDialogRationale by remember { mutableStateOf(false) }
@@ -95,39 +99,28 @@ fun QrScanScreen(
             showPermissionDeniedDialogRationale = permissionStatus.shouldShowRationale
         }
     }
+    val context = LocalContext.current
+    LaunchedEffect(scanError) {
+        val err = scanError ?: return@LaunchedEffect
+        Toast.makeText(context, context.getString(err.stringRes), Toast.LENGTH_SHORT).show()
+        onScanErrorShown()
+    }
     BackHandler(onBack = onBack)
+    val scrollBehavior = MiuixScrollBehavior()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(stringResource(R.string.qrscan_title))
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                }
+            MauthTopBar(
+                title = stringResource(R.string.qrscan_title),
+                scrollBehavior = scrollBehavior,
+                onBack = onBack,
             )
         },
-        snackbarHost = {
-            val snackbarHostState = remember { SnackbarHostState() }
-            val context = LocalContext.current
-            LaunchedEffect(scanError, context) {
-                if (scanError != null) {
-                    snackbarHostState.showSnackbar(context.getString(scanError.stringRes))
-                }
-            }
-            SnackbarHost(hostState = snackbarHostState)
-        }
     ) { paddingValues ->
         when (permissionStatus) {
             is PermissionStatus.Granted -> {
-                val context = LocalContext.current
-                val cameraAnalysis = remember(context) {
+                val cameraContext = LocalContext.current
+                val cameraAnalysis = remember(cameraContext) {
                     ImageAnalysis.Builder()
                         .setImageQueueDepth(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build()
@@ -151,16 +144,16 @@ fun QrScanScreen(
                             .fillMaxWidth()
                             .padding(paddingValues)
                             .padding(horizontal = 32.dp)
-                            .aspectRatio(1f / 1f),
-                        shape = MaterialTheme.shapes.extraLarge,
-                        tonalElevation = 1.dp
+                            .aspectRatio(1f),
+                        shape = RoundedCornerShape(MauthUiTokens.Radius.cardLarge),
+                        color = MiuixTheme.colorScheme.surface,
                     ) {
                         QrScanCamera(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
-                                .clip(MaterialTheme.shapes.large),
-                            state = rememberCameraState(context, analysis = cameraAnalysis)
+                                .clip(RoundedCornerShape(MauthUiTokens.Radius.cardRegular)),
+                            state = rememberCameraState(cameraContext, analysis = cameraAnalysis)
                         )
                     }
 
@@ -173,13 +166,15 @@ fun QrScanScreen(
             is PermissionStatus.Denied -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_error),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MiuixTheme.colorScheme.onBackground,
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(stringResource(R.string.qrscan_error))
                 }
             }

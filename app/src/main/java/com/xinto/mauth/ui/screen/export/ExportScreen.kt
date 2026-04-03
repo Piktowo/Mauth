@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -93,7 +96,8 @@ fun ExportScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight)
         ) {
@@ -152,7 +156,7 @@ fun ExportScreen(
                 is ExportScreenState.Empty -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight, Alignment.CenterVertically),
+                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -161,6 +165,7 @@ fun ExportScreen(
                             contentDescription = null,
                             tint = MiuixTheme.colorScheme.onBackground,
                         )
+                        Spacer(modifier = Modifier.height(MauthUiTokens.Space.tight))
                         Text(
                             text = stringResource(R.string.export_state_empty),
                             style = MiuixTheme.textStyles.headline2,
@@ -170,7 +175,7 @@ fun ExportScreen(
                 is ExportScreenState.Error -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -192,7 +197,7 @@ private fun BatchExports(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(MauthUiTokens.Space.tight, Alignment.CenterHorizontally),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val pagerState = rememberPagerState { uris.size }
